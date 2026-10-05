@@ -3277,6 +3277,11 @@ eslint-plugin-regexp@^3.1.1:
     regexp-ast-analysis "^0.7.1"
     scslre "^0.3.0"
 
+eslint-plugin-simple-import-sort@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-simple-import-sort/-/eslint-plugin-simple-import-sort-14.0.0.tgz#a07d4aa63ebf043e8d55497b4e2a3035bf800849"
+  integrity sha512-NUJO0+XFCkk+o5EsAJruTgnfMEpeWrPWeJS15UVF60GgXmqz1BJ9/3hzlvG7lkL8Bubzos5cCLptThbFfPnSMQ==
+
 eslint-plugin-unicorn@^73.0.0:
   version "73.0.0"
   resolved "https://registry.npmjs.org/eslint-plugin-unicorn/-/eslint-plugin-unicorn-73.0.0.tgz"
