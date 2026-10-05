@@ -5,6 +5,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -27,6 +29,7 @@
     "@vitest/coverage-v8": "^5.0.3",
     "@vue/test-utils": "^2.5.1",
     "happy-dom": "^20.14.5",
+    "typescript": "^6.0.3",
     "vitest": "^5.0.3"
   }
 }
