@@ -2,6 +2,7 @@ export type Person = {
   id: string
   firstName: string
   lastName: string
+  sex: 'male' | 'female' | 'unknown'
   birthDate?: string
   deathDate?: string
   parentUnionId?: string
