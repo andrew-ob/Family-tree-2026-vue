@@ -5,7 +5,8 @@ export type Person = {
   sex: 'male' | 'female' | 'unknown'
   birthDate?: string
   deathDate?: string
-  parentUnionId?: string
+  fatherId?: string
+  motherId?: string
 }
 
 export type Union = {
