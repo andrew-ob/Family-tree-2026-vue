@@ -11,7 +11,7 @@ export type Person = {
 export type Union = {
   id: string
   partner1Id: string
-  partner2Id: string
+  partner2Id?: string
   startDate?: string
   endDate?: string
   endReason?: 'divorce' | 'death' | 'separation'
