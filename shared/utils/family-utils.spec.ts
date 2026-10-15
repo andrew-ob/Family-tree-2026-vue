@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData } from '../types/family'
-import { getFather, getMother, getParents, getPersonById, getPersonsByName } from './family-utils'
+import { getChildren, getFather, getMother, getParents, getPersonById, getPersonsByName } from './family-utils'
 
 const data: FamilyData = {
   persons: [
@@ -147,6 +147,28 @@ describe('family-utils', () => {
     it('should ignore a parent id that points to a missing person', () => {
       expect(getParents(data, 'sophieId')).toEqual([])
       expect(getParents(data, 'samId')).toEqual([])
+    })
+  })
+
+  describe('getChildren', () => {
+    it('should return the children of a mother', () => {
+      expect(getChildren(data, 'marieId').map(p => p.id)).toEqual(['leaId', 'tomId', 'zoeId'])
+    })
+
+    it('should return the children of a father', () => {
+      expect(getChildren(data, 'pierreId').map(p => p.id)).toEqual(['chloeId', 'marie2Id'])
+    })
+
+    it('should return only the children of that parent', () => {
+      expect(getChildren(data, 'paulId').map(p => p.id)).toEqual(['leaId'])
+    })
+
+    it('should return an empty array when the person has no child', () => {
+      expect(getChildren(data, 'sophieId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist', () => {
+      expect(getChildren(data, 'nobodyId')).toEqual([])
     })
   })
 })
