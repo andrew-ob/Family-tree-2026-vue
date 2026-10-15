@@ -5,50 +5,69 @@ import { getPersonById, getPersonsByName } from './family-utils'
 
 const data: FamilyData = {
   persons: [
-    { id: 'tom', firstName: 'Tom', lastName: 'Martin', sex: 'male' },
-    { id: 'lea', firstName: 'Léa', lastName: 'Martin', sex: 'female' },
-    {
-      id: 'hugo', firstName: 'Hugo', lastName: 'Martin', sex: 'male', birthDate: '1996-03-08', parentUnionId: 'u2',
-    },
-    {
-      id: 'emma', firstName: 'Emma', lastName: 'Martin', sex: 'female', birthDate: '1998-08-19', parentUnionId: 'u2',
-    },
-    {
-      id: 'emma2', firstName: 'Emma', lastName: 'Martin', sex: 'female', birthDate: '1960-09-20',
-    },
+    // Marie has 3 children with 3 different fathers
+    { id: 'marieId', firstName: 'Marie', lastName: 'Martin', sex: 'female' },
+    { id: 'paulId', firstName: 'Paul', lastName: 'Dupont', sex: 'male' },
+    { id: 'jeanId', firstName: 'Jean', lastName: 'Blanc', sex: 'male' },
+    { id: 'lucId', firstName: 'Luc', lastName: 'Roux', sex: 'male' },
+
+    // Marie's children
+    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', fatherId: 'paulId', motherId: 'marieId' },
+    { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', fatherId: 'jeanId', motherId: 'marieId' },
+    { id: 'zoeId', firstName: 'Zoé', lastName: 'Roux', sex: 'female', fatherId: 'lucId', motherId: 'marieId' },
+
+    // Pierre has 2 children with 2 different mothers
+    { id: 'pierreId', firstName: 'Pierre', lastName: 'Martin', sex: 'male' },
+    { id: 'anneId', firstName: 'Anne', lastName: 'Fournier', sex: 'female' },
+    { id: 'julieId', firstName: 'Julie', lastName: 'Moreau', sex: 'female' },
+
+    // Chloe and Maxime are siblings, but have different mothers
+    { id: 'chloeId', firstName: 'Chloé', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'anneId' },
+    { id: 'marie2Id', firstName: 'Marie', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'julieId' },
+
+    // Sophie has a father that is not in the family data, and an unknown mother
+    { id: 'sophieId', firstName: 'Sophie', lastName: 'Martin', sex: 'female', fatherId: 'marcId' },
+
+    // Sam has an unknown father and a mother that is not in the family data
+    { id: 'samId', firstName: 'Sam', lastName: 'Martin', sex: 'male', motherId: 'liliId' },
   ],
-  unions: [],
+
+  unions: [
+    { id: 'u1', partner1Id: 'paulId', partner2Id: 'marieId', endReason: 'divorce' },
+    { id: 'u2', partner1Id: 'jeanId', partner2Id: 'marieId', endReason: 'divorce' },
+    { id: 'u3', partner1Id: 'lucId', partner2Id: 'marieId' },
+    { id: 'u4', partner1Id: 'pierreId', partner2Id: 'anneId', endReason: 'death' },
+    { id: 'u5', partner1Id: 'pierreId', partner2Id: 'julieId' },
+  ],
 }
 
 describe('family-utils', () => {
   describe('getPersonById', () => {
     it ('should return the person with the given id', () => {
-      const person = getPersonById(data, 'lea')
-      expect(person).toEqual({ id: 'lea', firstName: 'Léa', lastName: 'Martin', sex: 'female' })
+      expect(getPersonById(data, 'leaId')?.firstName).toBe('Léa')
     })
 
     it ('should return undefined when the id doesn\'t exist', () => {
-      const person = getPersonById(data, 'george')
-      expect(person).toBeUndefined()
+      expect(getPersonById(data, 'georgeId')).toBeUndefined()
     })
   })
 
   describe('getPersonsByName', () => {
     it('should return the persons with the given name', () => {
-      expect(getPersonsByName(data, 'Tom', 'Martin').map(p => p.id)).toEqual(['tom'])
+      expect(getPersonsByName(data, 'Tom', 'Blanc').map(p => p.id)).toEqual(['tomId'])
     })
 
     it('should return every person sharing the same name', () => {
-      expect(getPersonsByName(data, 'Emma', 'Martin').map(p => p.id)).toEqual(['emma', 'emma2'])
+      expect(getPersonsByName(data, 'Marie', 'Martin').map(p => p.id)).toEqual(['marieId', 'marie2Id'])
     })
 
     it.each([
-      ['LÉA', 'MARTIN'],
-      ['léa', 'martin'],
-      ['lea', 'MARTIN'],
-      ['  Léa ', ' Martin  '],
+      ['LÉA', 'DUPONT'],
+      ['léa', 'dupont'],
+      ['lea', 'DUPONT'],
+      ['  Léa ', ' Dupont  '],
     ])('should ignore case, accents and spaces when searching "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(data, firstName, lastName).map(p => p.id)).toEqual(['lea'])
+      expect(getPersonsByName(data, firstName, lastName).map(p => p.id)).toEqual(['leaId'])
     })
 
     it('should return an empty array when no person has the given name', () => {
