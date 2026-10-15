@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData } from '../types/family'
-import { getFather, getMother, getPersonById, getPersonsByName } from './family-utils'
+import { getFather, getMother, getParents, getPersonById, getPersonsByName } from './family-utils'
 
 const data: FamilyData = {
   persons: [
@@ -21,7 +21,7 @@ const data: FamilyData = {
     { id: 'anneId', firstName: 'Anne', lastName: 'Fournier', sex: 'female' },
     { id: 'julieId', firstName: 'Julie', lastName: 'Moreau', sex: 'female' },
 
-    // Chloe and Maxime are siblings, but have different mothers
+    // Chloe and Marie are siblings, but have different mothers
     { id: 'chloeId', firstName: 'Chloé', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'anneId' },
     { id: 'marie2Id', firstName: 'Marie', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'julieId' },
 
@@ -30,6 +30,10 @@ const data: FamilyData = {
 
     // Sam has an unknown father and a mother that is not in the family data
     { id: 'samId', firstName: 'Sam', lastName: 'Martin', sex: 'male', motherId: 'liliId' },
+
+    // Théo has a known mother and no father recorded
+    { id: 'ninaId', firstName: 'Nina', lastName: 'Petit', sex: 'female' },
+    { id: 'theoId', firstName: 'Théo', lastName: 'Petit', sex: 'male', motherId: 'ninaId' },
   ],
 
   unions: [
@@ -120,6 +124,29 @@ describe('family-utils', () => {
 
     it('should return undefined when motherId points to a missing person', () => {
       expect(getMother(data, 'samId')).toBeUndefined()
+    })
+  })
+
+  describe('getParents', () => {
+    it('should return the father then the mother', () => {
+      expect(getParents(data, 'leaId').map(p => p.id)).toEqual(['paulId', 'marieId'])
+    })
+
+    it('should return only the mother when no father is recorded', () => {
+      expect(getParents(data, 'theoId').map(p => p.id)).toEqual(['ninaId'])
+    })
+
+    it('should return an empty array when no parent is recorded', () => {
+      expect(getParents(data, 'paulId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist', () => {
+      expect(getParents(data, 'nobodyId')).toEqual([])
+    })
+
+    it('should ignore a parent id that points to a missing person', () => {
+      expect(getParents(data, 'sophieId')).toEqual([])
+      expect(getParents(data, 'samId')).toEqual([])
     })
   })
 })

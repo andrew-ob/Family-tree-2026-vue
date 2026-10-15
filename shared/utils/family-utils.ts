@@ -22,3 +22,6 @@ export function getMother(data: FamilyData, personId: string): Person | undefine
   return person?.motherId ? getPersonById(data, person.motherId) : undefined
 }
 
+export function getParents(data: FamilyData, personId: string): Person[] {
+  return [getFather(data, personId), getMother(data, personId)].filter((p): p is Person => !!p)
+}
