@@ -17,3 +17,8 @@ export function getFather(data: FamilyData, personId: string): Person | undefine
   return person?.fatherId ? getPersonById(data, person.fatherId) : undefined
 }
 
+export function getMother(data: FamilyData, personId: string): Person | undefined {
+  const person = getPersonById(data, personId)
+  return person?.motherId ? getPersonById(data, person.motherId) : undefined
+}
+
