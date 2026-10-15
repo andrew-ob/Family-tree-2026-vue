@@ -47,11 +47,11 @@ const data: FamilyData = {
 
 describe('family-utils', () => {
   describe('getPersonById', () => {
-    it ('should return the person with the given id', () => {
+    it('should return the person with the given id', () => {
       expect(getPersonById(data, 'leaId')?.firstName).toBe('Léa')
     })
 
-    it ('should return undefined when the id doesn\'t exist', () => {
+    it('should return undefined when the id doesn\'t exist', () => {
       expect(getPersonById(data, 'georgeId')).toBeUndefined()
     })
   })

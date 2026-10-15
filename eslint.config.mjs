@@ -9,6 +9,7 @@ export default withNuxt({
     'simple-import-sort': simpleImportSort,
   },
   rules: {
+    '@stylistic/function-call-spacing': ['error', 'never'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
   },
