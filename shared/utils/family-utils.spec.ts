@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData } from '../types/family'
-import { getPersonById, getPersonsByName } from './family-utils'
+import { getFather, getPersonById, getPersonsByName } from './family-utils'
 
 const data: FamilyData = {
   persons: [
@@ -84,6 +84,24 @@ describe('family-utils', () => {
 
     it('should return an empty array when the family is empty', () => {
       expect(getPersonsByName({ persons: [], unions: [] }, 'Tom', 'Martin')).toEqual([])
+    })
+  })
+
+  describe('getFather', () => {
+    it('should return the father of a person', () => {
+      expect(getFather(data, 'leaId')?.id).toBe('paulId')
+    })
+
+    it('should return undefined when the father is unknown', () => {
+      expect(getFather(data, 'samId')).toBeUndefined()
+    })
+
+    it('should return undefined when the person does not exist', () => {
+      expect(getFather(data, 'nobodyId')).toBeUndefined()
+    })
+
+    it('should return undefined when fatherId points to a missing person', () => {
+      expect(getFather(data, 'sophieId')).toBeUndefined()
     })
   })
 })
