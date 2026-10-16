@@ -18,6 +18,13 @@ export type Union = {
   endReason?: 'divorce' | 'death' | 'separation'
 }
 
+export type SiblingKind = 'full' | 'half'
+
+export type Sibling = {
+  person: Person
+  kind: SiblingKind
+}
+
 export type FamilyData = {
   persons: Person[]
   unions: Union[]

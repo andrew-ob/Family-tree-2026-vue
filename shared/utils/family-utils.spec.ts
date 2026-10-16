@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData } from '../types/family'
-import { getChildren, getFather, getMother, getParents, getPersonById, getPersonsByName } from './family-utils'
+import { getChildren, getFather, getMother, getParents, getPersonById, getPersonsByName, getSiblings } from './family-utils'
 
 const data: FamilyData = {
   persons: [
@@ -34,6 +34,15 @@ const data: FamilyData = {
     // Théo has a known mother and no father recorded
     { id: 'ninaId', firstName: 'Nina', lastName: 'Petit', sex: 'female' },
     { id: 'theoId', firstName: 'Théo', lastName: 'Petit', sex: 'male', motherId: 'ninaId' },
+
+    // Emma and Noé share both parents (full siblings)
+    { id: 'hugoId', firstName: 'Hugo', lastName: 'Bernard', sex: 'male' },
+    { id: 'claraId', firstName: 'Clara', lastName: 'Lambert', sex: 'female' },
+    { id: 'emmaId', firstName: 'Emma', lastName: 'Bernard', sex: 'female', fatherId: 'hugoId', motherId: 'claraId' },
+    { id: 'noeId', firstName: 'Noé', lastName: 'Bernard', sex: 'male', fatherId: 'hugoId', motherId: 'claraId' },
+
+    // Anne-Sophie has a compound first name and a compound last name
+    { id: 'annesophieId', firstName: 'Anne-Sophie', lastName: 'Le Gall', sex: 'female' },
   ],
 
   unions: [
@@ -169,6 +178,42 @@ describe('family-utils', () => {
 
     it('should return an empty array when the person does not exist', () => {
       expect(getChildren(data, 'nobodyId')).toEqual([])
+    })
+  })
+
+  describe('getSiblings', () => {
+    it('should return half-siblings sharing only the mother', () => {
+      const siblings = getSiblings(data, 'leaId')
+      expect(siblings.map(s => [s.person.id, s.kind])).toEqual([
+        ['tomId', 'half'],
+        ['zoeId', 'half'],
+      ])
+    })
+
+    it('should return half-siblings sharing only the father', () => {
+      const siblings = getSiblings(data, 'chloeId')
+      expect(siblings.map(s => [s.person.id, s.kind])).toEqual([['marie2Id', 'half']])
+    })
+
+    it('should return full siblings sharing both parents', () => {
+      const siblings = getSiblings(data, 'emmaId')
+      expect(siblings.map(s => [s.person.id, s.kind])).toEqual([['noeId', 'full']])
+    })
+
+    it('should not include the person itself', () => {
+      expect(getSiblings(data, 'leaId').map(s => s.person.id)).not.toContain('leaId')
+    })
+
+    it('should not treat persons with unknown parents as siblings', () => {
+      expect(getSiblings(data, 'paulId')).toEqual([])
+    })
+
+    it('should return an empty array when the person has no sibling', () => {
+      expect(getSiblings(data, 'theoId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist', () => {
+      expect(getSiblings(data, 'nobodyId')).toEqual([])
     })
   })
 })
