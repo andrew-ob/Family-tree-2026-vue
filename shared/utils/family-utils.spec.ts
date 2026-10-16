@@ -98,6 +98,35 @@ describe('family-utils', () => {
     it('should return an empty array when the family is empty', () => {
       expect(getPersonsByName({ persons: [], unions: [] }, 'Tom', 'Martin')).toEqual([])
     })
+
+    it.each([
+      ['', ''],
+      ['Tom', ''],
+      ['', 'Blanc'],
+      ['   ', '   '],
+    ])('should return an empty array when searching empty name "%s" "%s"', (firstName, lastName) => {
+      expect(getPersonsByName(data, firstName, lastName)).toEqual([])
+    })
+
+    it.each([
+      ['Anne-Sophie', 'Le Gall'],
+      ['ANNE-SOPHIE', 'LE GALL'],
+      ['anne-sophie', 'le gall'],
+      ['  Anne-Sophie ', ' Le Gall  '],
+    ])('should find a person with a compound name when searching "%s" "%s"', (firstName, lastName) => {
+      expect(getPersonsByName(data, firstName, lastName).map(p => p.id)).toEqual(['annesophieId'])
+    })
+
+    it.each([
+      ['Anne Sophie', 'Le Gall'],
+      ['AnneSophie', 'Le Gall'],
+      ['Anne-Sophie', 'Le  Gall'],
+      ['Anne-Sophie', 'LeGall'],
+      ['Anne', 'Le Gall'],
+      ['Anne-Sophie', 'Gall'],
+    ])('should not match a compound name written differently: "%s" "%s"', (firstName, lastName) => {
+      expect(getPersonsByName(data, firstName, lastName)).toEqual([])
+    })
   })
 
   describe('getFather', () => {
