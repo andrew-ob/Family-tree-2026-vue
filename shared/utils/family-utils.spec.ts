@@ -1,48 +1,41 @@
 import { describe, expect, it } from 'vitest'
 
-import type { FamilyData } from '../types/family'
+import type { FamilyData, Person } from '../types/family'
 import { getChildren, getFather, getMother, getParents, getPersonById, getPersonsByName, getSiblings } from './family-utils'
 
+/** Builds a person; only the fields that matter for a test need to be given. */
+const person = (overrides: Partial<Person> & { id: string }): Person => ({
+  firstName: 'Prénom',
+  lastName: 'Nom',
+  sex: 'unknown',
+  ...overrides,
+})
+
+/** Builds a family from persons only (no unions), for tests with their own specific data. */
+const family = (...persons: Person[]): FamilyData => ({ persons, unions: [] })
+
+/** General data, shared by the basic cases. Specific cases define their own data inside the test. */
 const data: FamilyData = {
   persons: [
     // Marie has 3 children with 3 different fathers
-    { id: 'marieId', firstName: 'Marie', lastName: 'Martin', sex: 'female' },
-    { id: 'paulId', firstName: 'Paul', lastName: 'Dupont', sex: 'male' },
-    { id: 'jeanId', firstName: 'Jean', lastName: 'Blanc', sex: 'male' },
-    { id: 'lucId', firstName: 'Luc', lastName: 'Roux', sex: 'male' },
+    person({ id: 'marieId', firstName: 'Marie', lastName: 'Martin', sex: 'female' }),
+    person({ id: 'paulId', firstName: 'Paul', lastName: 'Dupont', sex: 'male' }),
+    person({ id: 'jeanId', firstName: 'Jean', lastName: 'Blanc', sex: 'male' }),
+    person({ id: 'lucId', firstName: 'Luc', lastName: 'Roux', sex: 'male' }),
 
     // Marie's children
-    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', fatherId: 'paulId', motherId: 'marieId' },
-    { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', fatherId: 'jeanId', motherId: 'marieId' },
-    { id: 'zoeId', firstName: 'Zoé', lastName: 'Roux', sex: 'female', fatherId: 'lucId', motherId: 'marieId' },
+    person({ id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', fatherId: 'paulId', motherId: 'marieId' }),
+    person({ id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', fatherId: 'jeanId', motherId: 'marieId' }),
+    person({ id: 'zoeId', firstName: 'Zoé', lastName: 'Roux', sex: 'female', fatherId: 'lucId', motherId: 'marieId' }),
 
     // Pierre has 2 children with 2 different mothers
-    { id: 'pierreId', firstName: 'Pierre', lastName: 'Martin', sex: 'male' },
-    { id: 'anneId', firstName: 'Anne', lastName: 'Fournier', sex: 'female' },
-    { id: 'julieId', firstName: 'Julie', lastName: 'Moreau', sex: 'female' },
+    person({ id: 'pierreId', firstName: 'Pierre', lastName: 'Martin', sex: 'male' }),
+    person({ id: 'anneId', firstName: 'Anne', lastName: 'Fournier', sex: 'female' }),
+    person({ id: 'julieId', firstName: 'Julie', lastName: 'Moreau', sex: 'female' }),
 
-    // Chloe and Marie are siblings, but have different mothers
-    { id: 'chloeId', firstName: 'Chloé', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'anneId' },
-    { id: 'marie2Id', firstName: 'Marie', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'julieId' },
-
-    // Sophie has a father that is not in the family data, and an unknown mother
-    { id: 'sophieId', firstName: 'Sophie', lastName: 'Martin', sex: 'female', fatherId: 'marcId' },
-
-    // Sam has an unknown father and a mother that is not in the family data
-    { id: 'samId', firstName: 'Sam', lastName: 'Martin', sex: 'male', motherId: 'liliId' },
-
-    // Théo has a known mother and no father recorded
-    { id: 'ninaId', firstName: 'Nina', lastName: 'Petit', sex: 'female' },
-    { id: 'theoId', firstName: 'Théo', lastName: 'Petit', sex: 'male', motherId: 'ninaId' },
-
-    // Emma and Noé share both parents (full siblings)
-    { id: 'hugoId', firstName: 'Hugo', lastName: 'Bernard', sex: 'male' },
-    { id: 'claraId', firstName: 'Clara', lastName: 'Lambert', sex: 'female' },
-    { id: 'emmaId', firstName: 'Emma', lastName: 'Bernard', sex: 'female', fatherId: 'hugoId', motherId: 'claraId' },
-    { id: 'noeId', firstName: 'Noé', lastName: 'Bernard', sex: 'male', fatherId: 'hugoId', motherId: 'claraId' },
-
-    // Anne-Sophie has a compound first name and a compound last name
-    { id: 'annesophieId', firstName: 'Anne-Sophie', lastName: 'Le Gall', sex: 'female' },
+    // Chloé and the second Marie Martin are siblings, but have different mothers
+    person({ id: 'chloeId', firstName: 'Chloé', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'anneId' }),
+    person({ id: 'marie2Id', firstName: 'Marie', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'julieId' }),
   ],
 
   unions: [
@@ -96,7 +89,7 @@ describe('family-utils', () => {
     })
 
     it('should return an empty array when the family is empty', () => {
-      expect(getPersonsByName({ persons: [], unions: [] }, 'Tom', 'Martin')).toEqual([])
+      expect(getPersonsByName(family(), 'Tom', 'Martin')).toEqual([])
     })
 
     it.each([
@@ -107,6 +100,12 @@ describe('family-utils', () => {
     ])('should return an empty array when searching empty name "%s" "%s"', (firstName, lastName) => {
       expect(getPersonsByName(data, firstName, lastName)).toEqual([])
     })
+  })
+
+  describe('compound names', () => {
+    const compoundData = family(
+      person({ id: 'annesophieId', firstName: 'Anne-Sophie', lastName: 'Le Gall', sex: 'female' }),
+    )
 
     it.each([
       ['Anne-Sophie', 'Le Gall'],
@@ -114,7 +113,7 @@ describe('family-utils', () => {
       ['anne-sophie', 'le gall'],
       ['  Anne-Sophie ', ' Le Gall  '],
     ])('should find a person with a compound name when searching "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(data, firstName, lastName).map(p => p.id)).toEqual(['annesophieId'])
+      expect(getPersonsByName(compoundData, firstName, lastName).map(p => p.id)).toEqual(['annesophieId'])
     })
 
     it.each([
@@ -125,7 +124,7 @@ describe('family-utils', () => {
       ['Anne', 'Le Gall'],
       ['Anne-Sophie', 'Gall'],
     ])('should not match a compound name written differently: "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(data, firstName, lastName)).toEqual([])
+      expect(getPersonsByName(compoundData, firstName, lastName)).toEqual([])
     })
   })
 
@@ -135,7 +134,12 @@ describe('family-utils', () => {
     })
 
     it('should return undefined when the father is unknown', () => {
-      expect(getFather(data, 'samId')).toBeUndefined()
+      const specificData = family(
+        person({ id: 'ninaId' }),
+        person({ id: 'samId', motherId: 'ninaId' }),
+      )
+
+      expect(getFather(specificData, 'samId')).toBeUndefined()
     })
 
     it('should return undefined when the person does not exist', () => {
@@ -143,7 +147,11 @@ describe('family-utils', () => {
     })
 
     it('should return undefined when fatherId points to a missing person', () => {
-      expect(getFather(data, 'sophieId')).toBeUndefined()
+      const specificData = family(
+        person({ id: 'sophieId', fatherId: 'marcId' }),
+      )
+
+      expect(getFather(specificData, 'sophieId')).toBeUndefined()
     })
   })
 
@@ -153,7 +161,12 @@ describe('family-utils', () => {
     })
 
     it('should return undefined when no mother is recorded', () => {
-      expect(getMother(data, 'sophieId')).toBeUndefined()
+      const specificData = family(
+        person({ id: 'marcId' }),
+        person({ id: 'sophieId', fatherId: 'marcId' }),
+      )
+
+      expect(getMother(specificData, 'sophieId')).toBeUndefined()
     })
 
     it('should return undefined when the person does not exist', () => {
@@ -161,7 +174,11 @@ describe('family-utils', () => {
     })
 
     it('should return undefined when motherId points to a missing person', () => {
-      expect(getMother(data, 'samId')).toBeUndefined()
+      const specificData = family(
+        person({ id: 'samId', motherId: 'liliId' }),
+      )
+
+      expect(getMother(specificData, 'samId')).toBeUndefined()
     })
   })
 
@@ -171,7 +188,21 @@ describe('family-utils', () => {
     })
 
     it('should return only the mother when no father is recorded', () => {
-      expect(getParents(data, 'theoId').map(p => p.id)).toEqual(['ninaId'])
+      const specificData = family(
+        person({ id: 'ninaId' }),
+        person({ id: 'theoId', motherId: 'ninaId' }),
+      )
+
+      expect(getParents(specificData, 'theoId').map(p => p.id)).toEqual(['ninaId'])
+    })
+
+    it('should return only the father when no mother is recorded', () => {
+      const specificData = family(
+        person({ id: 'marcId' }),
+        person({ id: 'sophieId', fatherId: 'marcId' }),
+      )
+
+      expect(getParents(specificData, 'sophieId').map(p => p.id)).toEqual(['marcId'])
     })
 
     it('should return an empty array when no parent is recorded', () => {
@@ -183,8 +214,15 @@ describe('family-utils', () => {
     })
 
     it('should ignore a parent id that points to a missing person', () => {
-      expect(getParents(data, 'sophieId')).toEqual([])
-      expect(getParents(data, 'samId')).toEqual([])
+      const specificData = family(
+        person({ id: 'sophieId', fatherId: 'marcId' }),
+        person({ id: 'samId', motherId: 'liliId' }),
+        person({ id: 'maxId', fatherId: 'marcId', motherId: 'liliId' }),
+      )
+
+      expect(getParents(specificData, 'sophieId')).toEqual([])
+      expect(getParents(specificData, 'samId')).toEqual([])
+      expect(getParents(specificData, 'maxId')).toEqual([])
     })
   })
 
@@ -202,7 +240,7 @@ describe('family-utils', () => {
     })
 
     it('should return an empty array when the person has no child', () => {
-      expect(getChildren(data, 'sophieId')).toEqual([])
+      expect(getChildren(data, 'leaId')).toEqual([])
     })
 
     it('should return an empty array when the person does not exist', () => {
@@ -225,7 +263,14 @@ describe('family-utils', () => {
     })
 
     it('should return full siblings sharing both parents', () => {
-      const siblings = getSiblings(data, 'emmaId')
+      const specificData = family(
+        person({ id: 'hugoId' }),
+        person({ id: 'claraId' }),
+        person({ id: 'emmaId', fatherId: 'hugoId', motherId: 'claraId' }),
+        person({ id: 'noeId', fatherId: 'hugoId', motherId: 'claraId' }),
+      )
+
+      const siblings = getSiblings(specificData, 'emmaId')
       expect(siblings.map(s => [s.person.id, s.kind])).toEqual([['noeId', 'full']])
     })
 
@@ -234,11 +279,18 @@ describe('family-utils', () => {
     })
 
     it('should not treat persons with unknown parents as siblings', () => {
+      // paulId, marieId, jeanId... all have no recorded parent
       expect(getSiblings(data, 'paulId')).toEqual([])
     })
 
     it('should return an empty array when the person has no sibling', () => {
-      expect(getSiblings(data, 'theoId')).toEqual([])
+      const specificData = family(
+        person({ id: 'ninaId' }),
+        person({ id: 'theoId', motherId: 'ninaId' }),
+        person({ id: 'lilyId', motherId: 'otherMotherId' }),
+      )
+
+      expect(getSiblings(specificData, 'theoId')).toEqual([])
     })
 
     it('should return an empty array when the person does not exist', () => {
