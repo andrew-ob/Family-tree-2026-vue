@@ -50,3 +50,34 @@ export function getSiblings(data: FamilyData, personId: string): Sibling[] {
 
   return siblings
 }
+
+/**
+ * Returns every descendant of a person (children, grandchildren, ...), generation by generation.
+ * The person itself is never included, and each descendant appears only once.
+ * Returns an empty array when the person does not exist.
+ */
+export function getDescendants(data: FamilyData, personId: string): Person[] {
+  if (!getPersonById(data, personId)) return []
+
+  const descendants: Person[] = []
+  const visited = new Set<string>([personId]) // protects against duplicates and cycles in the data
+  let currentGeneration = [personId]
+
+  while (currentGeneration.length > 0) {
+    const nextGeneration: string[] = []
+
+    for (const parentId of currentGeneration) {
+      for (const child of getChildren(data, parentId)) {
+        if (visited.has(child.id)) continue
+
+        visited.add(child.id)
+        descendants.push(child)
+        nextGeneration.push(child.id)
+      }
+    }
+
+    currentGeneration = nextGeneration
+  }
+
+  return descendants
+}
