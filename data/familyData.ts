@@ -1,53 +1,34 @@
-// data/family.ts
+// data/familyData.ts
 import type { FamilyData } from '../shared/types/family'
 
 export const family: FamilyData = {
   persons: [
-    // Les adultes
-    {
-      id: 'paul', firstName: 'Paul', lastName: 'Martin', sex: 'male', birthDate: '1958-04-12',
-    },
-    {
-      id: 'marie', firstName: 'Marie', lastName: 'Durand', sex: 'female', birthDate: '1960-09-03',
-    },
-    {
-      id: 'claire', firstName: 'Claire', lastName: 'Bernard', sex: 'male', birthDate: '1965-02-21',
-    },
+    // Marie has 3 children with 3 different fathers
+    { id: 'marieId', firstName: 'Marie', lastName: 'Martin', sex: 'female' },
+    { id: 'paulId', firstName: 'Paul', lastName: 'Dupont', sex: 'male' },
+    { id: 'jeanId', firstName: 'Jean', lastName: 'Blanc', sex: 'male' },
+    { id: 'lucId', firstName: 'Luc', lastName: 'Roux', sex: 'male' },
 
-    // Enfants de Paul et Marie (union u1)
-    {
-      id: 'lea', firstName: 'Léa', lastName: 'Martin', sex: 'female', birthDate: '1985-07-14', parentUnionId: 'u1',
-    },
-    {
-      id: 'tom', firstName: 'Tom', lastName: 'Martin', sex: 'male', birthDate: '1988-11-30', parentUnionId: 'u1',
-    },
+    // Marie's children
+    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', fatherId: 'paulId', motherId: 'marieId' },
+    { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', fatherId: 'jeanId', motherId: 'marieId' },
+    { id: 'zoeId', firstName: 'Zoé', lastName: 'Roux', sex: 'female', fatherId: 'lucId', motherId: 'marieId' },
 
-    // Enfants de Paul et Claire (union u2)
-    {
-      id: 'hugo', firstName: 'Hugo', lastName: 'Martin', sex: 'male', birthDate: '1996-03-08', parentUnionId: 'u2',
-    },
-    {
-      id: 'emma', firstName: 'Emma', lastName: 'Martin', sex: 'female', birthDate: '1998-08-19', parentUnionId: 'u2',
-    },
-    {
-      id: 'noe', firstName: 'Noé', lastName: 'Martin', sex: 'male', birthDate: '2002-01-25', parentUnionId: 'u2',
-    },
+    // Pierre has 2 children with 2 different mothers
+    { id: 'pierreId', firstName: 'Pierre', lastName: 'Martin', sex: 'male' },
+    { id: 'anneId', firstName: 'Anne', lastName: 'Fournier', sex: 'female' },
+    { id: 'julieId', firstName: 'Julie', lastName: 'Moreau', sex: 'female' },
+
+    // Chloé and the second Marie Martin are siblings, but have different mothers
+    { id: 'chloeId', firstName: 'Chloé', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'anneId' },
+    { id: 'marie2Id', firstName: 'Marie', lastName: 'Martin', sex: 'female', fatherId: 'pierreId', motherId: 'julieId' },
   ],
 
   unions: [
-    {
-      id: 'u1',
-      partner1Id: 'paul',
-      partner2Id: 'marie',
-      startDate: '1983-06-18',
-      endDate: '1993-05-10',
-      endReason: 'divorce',
-    },
-    {
-      id: 'u2',
-      partner1Id: 'paul',
-      partner2Id: 'claire',
-      startDate: '1994-09-24',
-    },
+    { id: 'u1', partner1Id: 'paulId', partner2Id: 'marieId', endReason: 'divorce' },
+    { id: 'u2', partner1Id: 'jeanId', partner2Id: 'marieId', endReason: 'divorce' },
+    { id: 'u3', partner1Id: 'lucId', partner2Id: 'marieId' },
+    { id: 'u4', partner1Id: 'pierreId', partner2Id: 'anneId', endReason: 'death' },
+    { id: 'u5', partner1Id: 'pierreId', partner2Id: 'julieId' },
   ],
 }
