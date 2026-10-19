@@ -81,3 +81,36 @@ export function getDescendants(data: FamilyData, personId: string): Person[] {
 
   return descendants
 }
+
+/**
+ * Returns every ancestor of a person (parents, grandparents, ...), generation by generation.
+ * For each generation, the father comes before the mother.
+ * The person itself is never included, and each ancestor appears only once.
+ * Parents that are not in the family data are ignored.
+ * Returns an empty array when the person does not exist.
+ */
+export function getAncestors(data: FamilyData, personId: string): Person[] {
+  if (!getPersonById(data, personId)) return []
+
+  const ancestors: Person[] = []
+  const visited = new Set<string>([personId]) // protects against duplicates and cycles in the data
+  let currentGeneration = [personId]
+
+  while (currentGeneration.length > 0) {
+    const nextGeneration: string[] = []
+
+    for (const childId of currentGeneration) {
+      for (const parent of getParents(data, childId)) {
+        if (visited.has(parent.id)) continue
+
+        visited.add(parent.id)
+        ancestors.push(parent)
+        nextGeneration.push(parent.id)
+      }
+    }
+
+    currentGeneration = nextGeneration
+  }
+
+  return ancestors
+}

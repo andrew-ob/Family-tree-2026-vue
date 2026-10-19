@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData, Person } from '../types/family'
-import { getChildren, getDescendants, getFather, getMother, getParents, getPersonById, getPersonsByName, getSiblings } from './family-utils'
+import { getAncestors, getChildren, getDescendants, getFather, getMother, getParents, getPersonById, getPersonsByName, getSiblings } from './family-utils'
 
 /** Builds a person; only the fields that matter for a test need to be given. */
 const person = (overrides: Partial<Person> & { id: string }): Person => ({
@@ -375,6 +375,100 @@ describe('family-utils', () => {
       )
 
       expect(getDescendants(specificData, 'marcId')).toEqual([])
+    })
+  })
+
+  describe('getAncestors', () => {
+    it('should return the father then the mother of a person', () => {
+      expect(getAncestors(data, 'leaId').map(p => p.id)).toEqual(['paulId', 'marieId'])
+    })
+
+    it('should return an empty array when the person has no known ancestor', () => {
+      expect(getAncestors(data, 'paulId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist', () => {
+      expect(getAncestors(data, 'nobodyId')).toEqual([])
+    })
+
+    it('should return ancestors generation by generation, the father before the mother', () => {
+      const specificData = family(
+        person({ id: 'ggpaId' }), // great-grandfather, father of gpaId
+        person({ id: 'gpaId', fatherId: 'ggpaId' }),
+        person({ id: 'gmaId' }),
+        person({ id: 'mgpaId' }),
+        person({ id: 'dadId', fatherId: 'gpaId', motherId: 'gmaId' }),
+        person({ id: 'momId', fatherId: 'mgpaId' }), // only her father is known
+        person({ id: 'kidId', fatherId: 'dadId', motherId: 'momId' }),
+      )
+
+      expect(getAncestors(specificData, 'kidId').map(p => p.id)).toEqual([
+        'dadId',
+        'momId',
+        'gpaId',
+        'gmaId',
+        'mgpaId',
+        'ggpaId',
+      ])
+    })
+
+    it('should return only the mother when no father is recorded', () => {
+      const specificData = family(
+        person({ id: 'momId' }),
+        person({ id: 'kidId', motherId: 'momId' }),
+      )
+
+      expect(getAncestors(specificData, 'kidId').map(p => p.id)).toEqual(['momId'])
+    })
+
+    it('should ignore parents that are not in the family data', () => {
+      const specificData = family(
+        person({ id: 'momId' }),
+        person({ id: 'kidId', fatherId: 'marcId', motherId: 'momId' }),
+        person({ id: 'orphanId', fatherId: 'marcId', motherId: 'liliId' }),
+      )
+
+      expect(getAncestors(specificData, 'kidId').map(p => p.id)).toEqual(['momId'])
+      expect(getAncestors(specificData, 'orphanId')).toEqual([])
+    })
+
+    it('should return a common ancestor only once', () => {
+      const specificData = family(
+        person({ id: 'gId' }),
+        person({ id: 'aId', fatherId: 'gId' }),
+        person({ id: 'bId', fatherId: 'gId' }),
+        person({ id: 'xId', fatherId: 'aId', motherId: 'bId' }), // child of two cousins
+      )
+
+      expect(getAncestors(specificData, 'xId').map(p => p.id)).toEqual(['aId', 'bId', 'gId'])
+    })
+
+    it('should not include the person itself, its siblings or its children', () => {
+      const specificData = family(
+        person({ id: 'grandpaId' }),
+        person({ id: 'parentId', fatherId: 'grandpaId' }),
+        person({ id: 'siblingId', fatherId: 'grandpaId' }),
+        person({ id: 'childId', motherId: 'parentId' }),
+      )
+
+      expect(getAncestors(specificData, 'parentId').map(p => p.id)).toEqual(['grandpaId'])
+    })
+
+    it('should stop and not loop forever when the data contains a cycle', () => {
+      const specificData = family(
+        person({ id: 'aId', fatherId: 'bId' }),
+        person({ id: 'bId', fatherId: 'aId' }),
+      )
+
+      expect(getAncestors(specificData, 'aId').map(p => p.id)).toEqual(['bId'])
+    })
+
+    it('should return an empty array when a person is recorded as its own parent', () => {
+      const specificData = family(
+        person({ id: 'aId', fatherId: 'aId' }),
+      )
+
+      expect(getAncestors(specificData, 'aId')).toEqual([])
     })
   })
 })
