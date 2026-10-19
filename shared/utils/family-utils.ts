@@ -114,3 +114,20 @@ export function getAncestors(data: FamilyData, personId: string): Person[] {
 
   return ancestors
 }
+
+export function getPartners(data: FamilyData, personId: string): Person[] {
+  if (!getPersonById(data, personId)) return []
+
+  const partners: Person[] = []
+
+  for (const union of data.unions) {
+    let partnerId: string | undefined
+    if (union.partner1Id === personId) partnerId = union.partner2Id
+    else if (union.partner2Id === personId) partnerId = union.partner1Id
+
+    const partner = partnerId ? getPersonById(data, partnerId) : undefined
+    if (partner && partner.id !== personId && !partners.includes(partner)) partners.push(partner)
+  }
+
+  return partners
+}

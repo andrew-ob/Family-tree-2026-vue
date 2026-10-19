@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData, Person } from '../types/family'
-import { getAncestors, getChildren, getDescendants, getFather, getMother, getParents, getPersonById, getPersonsByName, getSiblings } from './family-utils'
+import { getAncestors, getChildren, getDescendants, getFather, getMother, getParents, getPartners, getPersonById, getPersonsByName, getSiblings } from './family-utils'
 
 /** Builds a person; only the fields that matter for a test need to be given. */
 const person = (overrides: Partial<Person> & { id: string }): Person => ({
@@ -469,6 +469,108 @@ describe('family-utils', () => {
       )
 
       expect(getAncestors(specificData, 'aId')).toEqual([])
+    })
+  })
+
+  describe('getPartners', () => {
+    it('should return the partners of a person', () => {
+      expect(getPartners(data, 'marieId').map(p => p.id)).toEqual(['paulId', 'jeanId', 'lucId'])
+    })
+
+    it('should find the partner whichever side of the union the person is on', () => {
+      // Paul is partner1 of u1, Marie is partner2 of u1
+      expect(getPartners(data, 'paulId').map(p => p.id)).toEqual(['marieId'])
+      expect(getPartners(data, 'pierreId').map(p => p.id)).toEqual(['anneId', 'julieId'])
+      expect(getPartners(data, 'julieId').map(p => p.id)).toEqual(['pierreId'])
+    })
+
+    it('should include the partners of ended unions', () => {
+      // u1 and u2 ended with a divorce, u4 ended with a death
+      expect(getPartners(data, 'marieId').map(p => p.id)).toContain('paulId')
+      expect(getPartners(data, 'anneId').map(p => p.id)).toEqual(['pierreId'])
+    })
+
+    it('should return an empty array when the person has no union', () => {
+      expect(getPartners(data, 'leaId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist', () => {
+      expect(getPartners(data, 'nobodyId')).toEqual([])
+    })
+
+    it('should return an empty array when the person does not exist but is referenced by a union', () => {
+      const specificData: FamilyData = {
+        persons: [person({ id: 'paulId' })],
+        unions: [{ id: 'u1', partner1Id: 'paulId', partner2Id: 'ghostId' }],
+      }
+
+      expect(getPartners(specificData, 'ghostId')).toEqual([])
+    })
+
+    it('should return an empty array when the family has no union', () => {
+      expect(getPartners(family(person({ id: 'paulId' })), 'paulId')).toEqual([])
+    })
+
+    it('should return an empty array when the second partner of the union is unknown', () => {
+      const specificData: FamilyData = {
+        persons: [person({ id: 'paulId' })],
+        unions: [{ id: 'u1', partner1Id: 'paulId' }],
+      }
+
+      expect(getPartners(specificData, 'paulId')).toEqual([])
+    })
+
+    it('should ignore a partner that is not in the family data', () => {
+      const specificData: FamilyData = {
+        persons: [person({ id: 'paulId' }), person({ id: 'marieId' })],
+        unions: [
+          { id: 'u1', partner1Id: 'paulId', partner2Id: 'ghostId' },
+          { id: 'u2', partner1Id: 'paulId', partner2Id: 'marieId' },
+        ],
+      }
+
+      expect(getPartners(specificData, 'paulId').map(p => p.id)).toEqual(['marieId'])
+    })
+
+    it('should return a partner only once when the couple has several unions', () => {
+      const specificData: FamilyData = {
+        persons: [person({ id: 'paulId' }), person({ id: 'marieId' })],
+        unions: [
+          { id: 'u1', partner1Id: 'paulId', partner2Id: 'marieId', endReason: 'divorce' },
+          { id: 'u2', partner1Id: 'marieId', partner2Id: 'paulId' }, // they got married again, in the other order
+        ],
+      }
+
+      expect(getPartners(specificData, 'paulId').map(p => p.id)).toEqual(['marieId'])
+      expect(getPartners(specificData, 'marieId').map(p => p.id)).toEqual(['paulId'])
+    })
+
+    it('should not return the person itself when a union links it to itself', () => {
+      const specificData: FamilyData = {
+        persons: [person({ id: 'paulId' })],
+        unions: [{ id: 'u1', partner1Id: 'paulId', partner2Id: 'paulId' }],
+      }
+
+      expect(getPartners(specificData, 'paulId')).toEqual([])
+    })
+
+    it('should return partners in the order of the unions, not in the order of the persons', () => {
+      const specificData: FamilyData = {
+        // the persons are deliberately not in the order of the unions
+        persons: [
+          person({ id: 'lucId' }),
+          person({ id: 'jeanId' }),
+          person({ id: 'paulId' }),
+          person({ id: 'marieId' }),
+        ],
+        unions: [
+          { id: 'u1', partner1Id: 'paulId', partner2Id: 'marieId' },
+          { id: 'u2', partner1Id: 'jeanId', partner2Id: 'marieId' },
+          { id: 'u3', partner1Id: 'lucId', partner2Id: 'marieId' },
+        ],
+      }
+
+      expect(getPartners(specificData, 'marieId').map(p => p.id)).toEqual(['paulId', 'jeanId', 'lucId'])
     })
   })
 })
