@@ -4,12 +4,11 @@
       v-for="person in persons"
       :key="person.id"
     >
-      <NuxtLink :to="`/person/${person.id}`">
+      <PersonCardLink :id="person.id">
         <PersonCardInfo
-          :key="person.id"
           :person="person"
         />
-      </NuxtLink>
+      </PersonCardLink>
     </li>
   </ul>
 </template>
