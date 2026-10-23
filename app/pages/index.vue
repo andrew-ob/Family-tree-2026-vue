@@ -2,19 +2,7 @@
   <main>
     <h1>Family tree</h1>
 
-    <ul>
-      <li
-        v-for="person in family.persons"
-        :key="person.id"
-      >
-        <NuxtLink :to="`/person/${person.id}`">
-          <PersonCardInfo
-            :key="person.id"
-            :person="person"
-          />
-        </NuxtLink>
-      </li>
-    </ul>
+    <PersonList :persons="family.persons" />
   </main>
 </template>
 
