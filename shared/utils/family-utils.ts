@@ -1,4 +1,4 @@
-import type { FamilyData, Person, Sibling } from '../types/family'
+import type { FamilyData, Person, Sibling } from '../types/familyTypes'
 import { normalizeText } from './normalize-text'
 
 export function getPersonById(data: FamilyData, personId: string): Person | undefined {

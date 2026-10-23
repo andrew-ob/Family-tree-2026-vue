@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { FamilyData, Person } from '../types/family'
+import type { FamilyData, Person } from '../types/familyTypes'
 import { getAncestors, getChildren, getDescendants, getFather, getMother, getParents, getPartners, getPersonById, getPersonsByName, getSiblings } from './family-utils'
 
 /** Builds a person; only the fields that matter for a test need to be given. */

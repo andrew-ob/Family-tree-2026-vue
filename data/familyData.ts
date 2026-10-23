@@ -1,5 +1,5 @@
 // data/familyData.ts
-import type { FamilyData } from '../shared/types/family'
+import type { FamilyData } from '../shared/types/familyTypes'
 
 export const family: FamilyData = {
   persons: [
