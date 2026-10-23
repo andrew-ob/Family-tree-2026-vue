@@ -8,7 +8,10 @@
         :key="person.id"
       >
         <NuxtLink :to="`/person/${person.id}`">
-          {{ person.firstName }} {{ person.lastName }}
+          <PersonCardInfo
+            :key="person.id"
+            :person="person"
+          />
         </NuxtLink>
       </li>
     </ul>
