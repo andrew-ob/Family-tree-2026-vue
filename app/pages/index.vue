@@ -7,7 +7,9 @@
         v-for="person in family.persons"
         :key="person.id"
       >
-        {{ person.firstName }} {{ person.lastName }}
+        <NuxtLink :to="`/person/${person.id}`">
+          {{ person.firstName }} {{ person.lastName }}
+        </NuxtLink>
       </li>
     </ul>
   </main>
