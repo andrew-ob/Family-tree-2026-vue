@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul class="flex flex-wrap">
     <li
       v-for="person in persons"
       :key="person.id"
