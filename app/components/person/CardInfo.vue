@@ -1,14 +1,37 @@
 <template>
-  <div class="py-4">
-    <div>{{ person.firstName }} {{ person.lastName }}</div>
-    <div>{{ person.sex }}</div>
+  <div
+    class="p-4 my-2 min-w-[116px] min-h-[53px] flex bg-red-500 hover:bg-red-900 rounded-xl text-white"
+  >
+    <div
+      class="rounded-2xl p-0.5 mr-[5px]"
+      :class="{
+        'bg-blue-300': person.sex === 'male',
+        'bg-pink-300': person.sex === 'female',
+        'bg-gray-300': person.sex === 'unknown' }"
+    >
+      <span class="sr-only">{{ sexLabel }}</span>
+    </div>
+
+    <div>
+      <p>{{ person.firstName }} {{ person.lastName }}</p>
+
+      <p>{{ person.birthDate || 'XXXX' }} - {{ person.deathDate || 'XXXX' }}</p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Person } from '~~/shared/types/familyTypes'
 
-defineProps<{
+interface CardProps {
   person: Person
-}>()
+}
+
+const { person } = defineProps<CardProps>()
+
+const sexLabel = computed(() => {
+  if (person.sex === 'female') return 'Femme'
+  if (person.sex === 'male') return 'Homme'
+  return 'Sexe inconnu'
+})
 </script>
