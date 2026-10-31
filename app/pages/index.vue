@@ -4,10 +4,10 @@
       Family tree
     </h1>
 
-    <PersonList :persons="family.persons" />
+    <PersonList :persons="familyData.persons" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { family } from '~~/data/familyData'
+import { familyData } from '~~/data/familyData'
 </script>

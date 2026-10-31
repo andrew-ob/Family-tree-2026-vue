@@ -1,7 +1,7 @@
 // data/familyData.ts
 import type { FamilyData } from '../shared/types/familyTypes'
 
-export const family: FamilyData = {
+export const familyData: FamilyData = {
   persons: [
     // Marie has 3 children with 3 different fathers
     { id: 'marieId', firstName: 'Marie', lastName: 'Martin', sex: 'female', birthDate: '1948', deathDate: '1996' },
