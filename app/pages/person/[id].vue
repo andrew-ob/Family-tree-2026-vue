@@ -15,10 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { familyData } from '~~/data/familyData'
-import { getPersonById } from '~~/shared/utils/family-utils'
-
 const route = useRoute()
+const { getPersonById } = useFamily()
 
-const person = computed(() => getPersonById(familyData, String(route.params.id)))
+const person = computed(() => getPersonById(String(route.params.id)))
 </script>
