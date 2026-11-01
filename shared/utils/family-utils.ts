@@ -1,4 +1,4 @@
-import type { FamilyData, Person, Sibling } from '../types/familyTypes'
+import type { FamilyData, Parents, Person, Sibling } from '../types/familyTypes'
 import { normalizeText } from './normalize-text'
 
 export function getPersonById(data: FamilyData, personId: string): Person | undefined {
@@ -22,8 +22,11 @@ export function getMother(data: FamilyData, personId: string): Person | undefine
   return person?.motherId ? getPersonById(data, person.motherId) : undefined
 }
 
-export function getParents(data: FamilyData, personId: string): Person[] {
-  return [getFather(data, personId), getMother(data, personId)].filter((p): p is Person => !!p)
+export function getParents(data: FamilyData, personId: string): Parents {
+  return {
+    father: getFather(data, personId),
+    mother: getMother(data, personId),
+  }
 }
 
 export function getChildren(data: FamilyData, personId: string): Person[] {
@@ -93,15 +96,17 @@ export function getAncestors(data: FamilyData, personId: string): Person[] {
   if (!getPersonById(data, personId)) return []
 
   const ancestors: Person[] = []
-  const visited = new Set<string>([personId]) // protects against duplicates and cycles in the data
+  const visited = new Set<string>([personId])
   let currentGeneration = [personId]
 
   while (currentGeneration.length > 0) {
     const nextGeneration: string[] = []
 
     for (const childId of currentGeneration) {
-      for (const parent of getParents(data, childId)) {
-        if (visited.has(parent.id)) continue
+      const { father, mother } = getParents(data, childId)
+
+      for (const parent of [father, mother]) {
+        if (!parent || visited.has(parent.id)) continue
 
         visited.add(parent.id)
         ancestors.push(parent)

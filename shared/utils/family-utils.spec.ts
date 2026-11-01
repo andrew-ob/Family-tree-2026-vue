@@ -183,34 +183,43 @@ describe('family-utils', () => {
   })
 
   describe('getParents', () => {
-    it('should return the father then the mother', () => {
-      expect(getParents(data, 'leaId').map(p => p.id)).toEqual(['paulId', 'marieId'])
+    it('should return the father and the mother', () => {
+      const parents = getParents(data, 'leaId')
+
+      expect(parents.father?.id).toBe('paulId')
+      expect(parents.mother?.id).toBe('marieId')
     })
 
-    it('should return only the mother when no father is recorded', () => {
+    it('should only return the mother when no father is recorded', () => {
       const specificData = family(
         person({ id: 'ninaId' }),
         person({ id: 'theoId', motherId: 'ninaId' }),
       )
 
-      expect(getParents(specificData, 'theoId').map(p => p.id)).toEqual(['ninaId'])
+      const parents = getParents(specificData, 'theoId')
+
+      expect(parents.father).toBeUndefined()
+      expect(parents.mother?.id).toBe('ninaId')
     })
 
-    it('should return only the father when no mother is recorded', () => {
+    it('should only return the father when no mother is recorded', () => {
       const specificData = family(
         person({ id: 'marcId' }),
         person({ id: 'sophieId', fatherId: 'marcId' }),
       )
 
-      expect(getParents(specificData, 'sophieId').map(p => p.id)).toEqual(['marcId'])
+      const parents = getParents(specificData, 'sophieId')
+
+      expect(parents.father?.id).toBe('marcId')
+      expect(parents.mother).toBeUndefined()
     })
 
-    it('should return an empty array when no parent is recorded', () => {
-      expect(getParents(data, 'paulId')).toEqual([])
+    it('should return no parent when none is recorded', () => {
+      expect(getParents(data, 'paulId')).toStrictEqual({ father: undefined, mother: undefined })
     })
 
-    it('should return an empty array when the person does not exist', () => {
-      expect(getParents(data, 'nobodyId')).toEqual([])
+    it('should return no parent when the person does not exist', () => {
+      expect(getParents(data, 'nobodyId')).toStrictEqual({ father: undefined, mother: undefined })
     })
 
     it('should ignore a parent id that points to a missing person', () => {
@@ -220,9 +229,9 @@ describe('family-utils', () => {
         person({ id: 'maxId', fatherId: 'marcId', motherId: 'liliId' }),
       )
 
-      expect(getParents(specificData, 'sophieId')).toEqual([])
-      expect(getParents(specificData, 'samId')).toEqual([])
-      expect(getParents(specificData, 'maxId')).toEqual([])
+      expect(getParents(specificData, 'sophieId')).toStrictEqual({ father: undefined, mother: undefined })
+      expect(getParents(specificData, 'samId')).toStrictEqual({ father: undefined, mother: undefined })
+      expect(getParents(specificData, 'maxId')).toStrictEqual({ father: undefined, mother: undefined })
     })
   })
 

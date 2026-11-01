@@ -29,3 +29,8 @@ export type FamilyData = {
   persons: Person[]
   unions: Union[]
 }
+
+export type Parents = {
+  father?: Person
+  mother?: Person
+}
