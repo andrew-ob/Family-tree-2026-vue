@@ -1,4 +1,4 @@
-import type { FamilyData, Parents, Person, Sibling } from '../types/familyTypes'
+import type { FamilyData, Parents, Person, PersonDetails, Sibling } from '../types/familyTypes'
 import { normalizeText } from './normalize-text'
 
 export function getPersonById(data: FamilyData, personId: string): Person | undefined {
@@ -135,4 +135,20 @@ export function getPartners(data: FamilyData, personId: string): Person[] {
   }
 
   return partners
+}
+
+export function getPersonDetails(data: FamilyData, personId: string): PersonDetails | undefined {
+  const person = getPersonById(data, personId)
+
+  if (!person) return undefined
+
+  const { father, mother } = getParents(data, personId)
+
+  return {
+    person,
+    parents: [father, mother].filter(p => p !== undefined),
+    children: getChildren(data, personId),
+    siblings: getSiblings(data, personId),
+    partners: getPartners(data, personId),
+  }
 }

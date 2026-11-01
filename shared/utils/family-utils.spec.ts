@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest'
 
 import type { FamilyData, Person } from '../types/familyTypes'
-import { getAncestors, getChildren, getDescendants, getFather, getMother, getParents, getPartners, getPersonById, getPersonsByName, getSiblings } from './family-utils'
+import {
+  getAncestors,
+  getChildren,
+  getDescendants,
+  getFather,
+  getMother,
+  getParents,
+  getPartners,
+  getPersonById,
+  getPersonDetails,
+  getPersonsByName,
+  getSiblings,
+} from './family-utils'
 
 /** Builds a person; only the fields that matter for a test need to be given. */
 const person = (overrides: Partial<Person> & { id: string }): Person => ({
@@ -580,6 +592,41 @@ describe('family-utils', () => {
       }
 
       expect(getPartners(specificData, 'marieId').map(p => p.id)).toEqual(['paulId', 'jeanId', 'lucId'])
+    })
+  })
+
+  describe('getPersonDetails', () => {
+    it('should gather the person and all its relatives', () => {
+      const details = getPersonDetails(data, 'marieId')
+
+      expect(details?.person.id).toBe('marieId')
+      expect(details?.parents).toEqual([])
+      expect(details?.children.map(p => p.id)).toEqual(['leaId', 'tomId', 'zoeId'])
+      expect(details?.siblings).toEqual([])
+      expect(details?.partners.map(p => p.id)).toEqual(['paulId', 'jeanId', 'lucId'])
+    })
+
+    it('should return the parents and the siblings with their kind', () => {
+      const details = getPersonDetails(data, 'leaId')
+
+      expect(details?.parents.map(p => p.id)).toEqual(['paulId', 'marieId'])
+      expect(details?.siblings.map(s => [s.person.id, s.kind])).toEqual([
+        ['tomId', 'half'],
+        ['zoeId', 'half'],
+      ])
+    })
+
+    it('should omit an unknown parent', () => {
+      const specificData = family(
+        person({ id: 'pereId' }),
+        person({ id: 'enfantId', fatherId: 'pereId' }),
+      )
+
+      expect(getPersonDetails(specificData, 'enfantId')?.parents.map(p => p.id)).toEqual(['pereId'])
+    })
+
+    it('should return undefined when the person does not exist', () => {
+      expect(getPersonDetails(data, 'unknownId')).toBeUndefined()
     })
   })
 })

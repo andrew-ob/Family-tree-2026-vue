@@ -34,3 +34,11 @@ export type Parents = {
   father?: Person
   mother?: Person
 }
+
+export type PersonDetails = {
+  person: Person
+  parents: Person[]
+  children: Person[]
+  siblings: Sibling[]
+  partners: Person[]
+}

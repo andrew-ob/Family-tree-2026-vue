@@ -16,5 +16,6 @@ export function useFamily() {
     getDescendants: (id: string) => getDescendants(family.value, id),
     getAncestors: (id: string) => getAncestors(family.value, id),
     getPartners: (id: string) => getPartners(family.value, id),
+    getPersonDetails: (id: string) => getPersonDetails(family.value, id),
   }
 }
