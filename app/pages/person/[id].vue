@@ -17,7 +17,7 @@
 
       <PersonSummaryList
         title="Frères et soeurs"
-        :persons="siblings"
+        :persons="personDetails.siblings.map(s => s.person)"
       />
 
       <PersonSummaryList
@@ -37,5 +37,4 @@ const route = useRoute()
 const { getPersonDetails } = useFamily()
 
 const personDetails = computed(() => getPersonDetails(route.params.id as string))
-const siblings = computed(() => personDetails.value?.siblings.map(s => s.person) ?? [])
 </script>
