@@ -4,11 +4,11 @@
       v-for="person in persons"
       :key="person.id"
     >
-      <PersonCardLink :id="person.id">
+      <PersonLinkPage :id="person.id">
         <PersonCardInfo
           :person="person"
         />
-      </PersonCardLink>
+      </PersonLinkPage>
     </li>
   </ul>
 </template>
