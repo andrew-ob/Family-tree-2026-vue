@@ -1,11 +1,29 @@
 <template>
   <main>
-    <div v-if="person">
-      <div>{{ person.firstName }}</div>
-      <div>{{ person.lastName }}</div>
-      <div>{{ person.birthDate }}</div>
-      <div>{{ person.deathDate }}</div>
-      <div>{{ person.sex }}</div>
+    <div v-if="personDetails">
+      <PersonHeader
+        :person="personDetails.person"
+      />
+
+      <PersonSummaryList
+        title="Parents"
+        :persons="personDetails.parents"
+      />
+
+      <PersonSummaryList
+        title="Enfants"
+        :persons="personDetails.children"
+      />
+
+      <PersonSummaryList
+        title="Frères et soeurs"
+        :persons="siblings"
+      />
+
+      <PersonSummaryList
+        title="Partenaires"
+        :persons="personDetails.partners"
+      />
     </div>
 
     <div v-else>
@@ -16,7 +34,8 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const { getPersonById } = useFamily()
+const { getPersonDetails } = useFamily()
 
-const person = computed(() => getPersonById(String(route.params.id)))
+const personDetails = computed(() => getPersonDetails(route.params.id as string))
+const siblings = computed(() => personDetails.value?.siblings.map(s => s.person) ?? [])
 </script>
