@@ -12,6 +12,17 @@ export function getPersonsByName(data: FamilyData, firstName: string, lastName: 
   return data.persons.filter(p => normalizeText(p.firstName) === firstNameNormalized && normalizeText(p.lastName) === lastNameNormalized)
 }
 
+export function searchPersons(data: FamilyData, { firstName, lastName }: { firstName: string, lastName: string }): Person[] {
+  const first = normalizeText(firstName)
+  const last = normalizeText(lastName)
+
+  return data.persons.filter((p) => {
+    if (first && normalizeText(p.firstName) !== first) return false
+    if (last && normalizeText(p.lastName) !== last) return false
+    return true
+  })
+}
+
 export function getFather(data: FamilyData, personId: string): Person | undefined {
   const person = getPersonById(data, personId)
   return person?.fatherId ? getPersonById(data, person.fatherId) : undefined
