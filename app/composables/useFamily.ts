@@ -7,7 +7,7 @@ export function useFamily() {
   return {
     family,
     getPersonById: (id: string) => getPersonById(family.value, id),
-    getPersonsByName: (firstName: string, lastName: string) => getPersonsByName(family.value, firstName, lastName),
+    searchPersons: (criteria: { firstName: string, lastName: string }) => searchPersons(family.value, criteria),
     getFather: (id: string) => getFather(family.value, id),
     getMother: (id: string) => getMother(family.value, id),
     getParents: (id: string) => getParents(family.value, id),

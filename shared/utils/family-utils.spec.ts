@@ -11,7 +11,6 @@ import {
   getPartners,
   getPersonById,
   getPersonDetails,
-  getPersonsByName,
   getSiblings,
   searchPersons,
 } from './family-utils'
@@ -68,50 +67,6 @@ describe('family-utils', () => {
 
     it('should return undefined when the id doesn\'t exist', () => {
       expect(getPersonById(data, 'georgeId')).toBeUndefined()
-    })
-  })
-
-  describe('getPersonsByName', () => {
-    it('should return the persons with the given name', () => {
-      expect(getPersonsByName(data, 'Tom', 'Blanc').map(p => p.id)).toEqual(['tomId'])
-    })
-
-    it('should return every person sharing the same name', () => {
-      expect(getPersonsByName(data, 'Marie', 'Martin').map(p => p.id)).toEqual(['marieId', 'marie2Id'])
-    })
-
-    it.each([
-      ['LÉA', 'DUPONT'],
-      ['léa', 'dupont'],
-      ['lea', 'DUPONT'],
-      ['  Léa ', ' Dupont  '],
-    ])('should ignore case, accents and spaces when searching "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(data, firstName, lastName).map(p => p.id)).toEqual(['leaId'])
-    })
-
-    it('should return an empty array when no person has the given name', () => {
-      expect(getPersonsByName(data, 'George', 'Martin')).toEqual([])
-    })
-
-    it('should not match when first and last names are swapped', () => {
-      expect(getPersonsByName(data, 'Martin', 'Tom')).toEqual([])
-    })
-
-    it('should not match on a partial name', () => {
-      expect(getPersonsByName(data, 'To', 'Martin')).toEqual([])
-    })
-
-    it('should return an empty array when the family is empty', () => {
-      expect(getPersonsByName(family(), 'Tom', 'Martin')).toEqual([])
-    })
-
-    it.each([
-      ['', ''],
-      ['Tom', ''],
-      ['', 'Blanc'],
-      ['   ', '   '],
-    ])('should return an empty array when searching empty name "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(data, firstName, lastName)).toEqual([])
     })
   })
 
@@ -198,6 +153,15 @@ describe('family-utils', () => {
         person({ id: 'annesophieId', firstName: 'Anne-Sophie', lastName: 'Le Gall', sex: 'female' }),
       )
 
+      it.each([
+        ['Anne-Sophie', 'Le Gall'],
+        ['ANNE-SOPHIE', 'LE GALL'],
+        ['anne-sophie', 'le gall'],
+        ['  Anne-Sophie ', ' Le Gall  '],
+      ])('should find a person with a compound name when searching "%s" "%s"', (firstName, lastName) => {
+        expect(ids(searchPersons(compoundData, { firstName, lastName }))).toEqual(['annesophieId'])
+      })
+
       it('should find a compound first name or last name given alone', () => {
         expect(ids(searchPersons(compoundData, { firstName: 'ANNE-SOPHIE', lastName: '' }))).toEqual(['annesophieId'])
         expect(ids(searchPersons(compoundData, { firstName: '', lastName: 'le gall' }))).toEqual(['annesophieId'])
@@ -210,35 +174,12 @@ describe('family-utils', () => {
         ['', 'LeGall'],
         ['', 'Le  Gall'],
         ['', 'Gall'],
+        ['Anne-Sophie', 'LeGall'],
+        ['Anne-Sophie', 'Gall'],
+        ['Anne', 'Le Gall'],
       ])('should not match a compound name written differently: "%s" "%s"', (firstName, lastName) => {
         expect(searchPersons(compoundData, { firstName, lastName })).toEqual([])
       })
-    })
-  })
-
-  describe('compound names', () => {
-    const compoundData = family(
-      person({ id: 'annesophieId', firstName: 'Anne-Sophie', lastName: 'Le Gall', sex: 'female' }),
-    )
-
-    it.each([
-      ['Anne-Sophie', 'Le Gall'],
-      ['ANNE-SOPHIE', 'LE GALL'],
-      ['anne-sophie', 'le gall'],
-      ['  Anne-Sophie ', ' Le Gall  '],
-    ])('should find a person with a compound name when searching "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(compoundData, firstName, lastName).map(p => p.id)).toEqual(['annesophieId'])
-    })
-
-    it.each([
-      ['Anne Sophie', 'Le Gall'],
-      ['AnneSophie', 'Le Gall'],
-      ['Anne-Sophie', 'Le  Gall'],
-      ['Anne-Sophie', 'LeGall'],
-      ['Anne', 'Le Gall'],
-      ['Anne-Sophie', 'Gall'],
-    ])('should not match a compound name written differently: "%s" "%s"', (firstName, lastName) => {
-      expect(getPersonsByName(compoundData, firstName, lastName)).toEqual([])
     })
   })
 

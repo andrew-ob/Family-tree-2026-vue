@@ -24,7 +24,7 @@ describe('useFamily', () => {
     const f = useFamily()
 
     expect(f.getPersonById('filleId')?.id).toBe('filleId')
-    expect(f.getPersonsByName('Léa', 'Dupont').map(p => p.id)).toEqual(['filleId'])
+    expect(f.searchPersons({ firstName: 'Léa', lastName: 'Dupont' }).map(p => p.id)).toEqual(['filleId'])
     expect(f.getFather('filleId')?.id).toBe('pereId')
     expect(f.getMother('filleId')?.id).toBe('mereId')
     expect(f.getParents('filleId').father?.id).toBe('pereId')
