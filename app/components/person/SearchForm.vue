@@ -1,0 +1,32 @@
+<template>
+  <form
+    class="flex gap-4 m-6"
+    role="search"
+    @submit.prevent
+  >
+    <label class="flex flex-col">
+      Prénom
+      <input
+        v-model="firstName"
+        name="firstName"
+        type="search"
+        class="rounded p-2"
+      >
+    </label>
+
+    <label class="flex flex-col">
+      Nom
+      <input
+        v-model="lastName"
+        name="lastName"
+        type="search"
+        class="rounded p-2"
+      >
+    </label>
+  </form>
+</template>
+
+<script setup lang="ts">
+const firstName = defineModel<string>('firstName', { default: '' })
+const lastName = defineModel<string>('lastName', { default: '' })
+</script>
