@@ -7,8 +7,17 @@
     <PersonSearchForm
       v-model:first-name="criteria.firstName"
       v-model:last-name="criteria.lastName"
+      @search="search"
     />
-    <PersonList :persons="results" />
+
+    <PersonList
+      v-if="results.length"
+      :persons="results"
+    />
+
+    <p v-else>
+      Aucune personne trouvée
+    </p>
   </main>
 </template>
 
@@ -18,6 +27,11 @@ import type { PersonSearchCriteria } from '~~/shared/types/familyTypes'
 const { searchPersons } = useFamily()
 
 const criteria = reactive<PersonSearchCriteria>({ firstName: '', lastName: '' })
-const results = computed(() => searchPersons(criteria))
-const { family } = useFamily()
+const appliedCriteria = ref<PersonSearchCriteria>({ ...criteria })
+
+const results = computed(() => searchPersons(appliedCriteria.value))
+
+function search() {
+  appliedCriteria.value = { ...criteria }
+}
 </script>

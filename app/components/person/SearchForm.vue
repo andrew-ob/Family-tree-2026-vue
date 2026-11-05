@@ -2,7 +2,7 @@
   <form
     class="flex gap-4 m-6"
     role="search"
-    @submit.prevent
+    @submit.prevent="emit('search')"
   >
     <label class="flex flex-col">
       Prénom
@@ -23,10 +23,18 @@
         class="rounded p-2"
       >
     </label>
+
+    <button
+      type="submit"
+    >
+      Rechercher
+    </button>
   </form>
 </template>
 
 <script setup lang="ts">
 const firstName = defineModel<string>('firstName', { default: '' })
 const lastName = defineModel<string>('lastName', { default: '' })
+
+const emit = defineEmits<{ search: [] }>()
 </script>
