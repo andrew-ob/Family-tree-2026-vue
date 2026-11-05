@@ -58,4 +58,27 @@ describe('PersonSearchForm', () => {
 
     expect(wrapper.find('button[type="submit"]').text()).toBe('Rechercher')
   })
+
+  it('should emit reset when the form is reset', async () => {
+    const wrapper = await mountSuspended(PersonSearchForm)
+
+    await wrapper.find('form').trigger('reset')
+
+    expect(wrapper.emitted('reset')).toHaveLength(1)
+  })
+
+  it('should not let the browser reset the fields by itself', async () => {
+    const wrapper = await mountSuspended(PersonSearchForm)
+    const reset = new Event('reset', { cancelable: true })
+
+    wrapper.find('form').element.dispatchEvent(reset)
+
+    expect(reset.defaultPrevented).toBe(true)
+  })
+
+  it('should have a reset button labelled Effacer', async () => {
+    const wrapper = await mountSuspended(PersonSearchForm)
+
+    expect(wrapper.find('button[type="reset"]').text()).toBe('Effacer')
+  })
 })

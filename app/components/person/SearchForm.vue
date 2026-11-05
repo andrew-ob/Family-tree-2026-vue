@@ -3,6 +3,7 @@
     class="flex gap-4 m-6"
     role="search"
     @submit.prevent="emit('search')"
+    @reset.prevent="emit('reset')"
   >
     <label class="flex flex-col">
       Prénom
@@ -29,6 +30,12 @@
     >
       Rechercher
     </button>
+
+    <button
+      type="reset"
+    >
+      Effacer
+    </button>
   </form>
 </template>
 
@@ -36,5 +43,5 @@
 const firstName = defineModel<string>('firstName', { default: '' })
 const lastName = defineModel<string>('lastName', { default: '' })
 
-const emit = defineEmits<{ search: [] }>()
+const emit = defineEmits<{ search: [], reset: [] }>()
 </script>

@@ -74,4 +74,40 @@ describe('Index page', () => {
     expect(wrapper.findAll('li')).toHaveLength(0)
     expect(wrapper.text()).toContain('Aucune personne trouvée')
   })
+
+  it('should show the whole family again after a reset', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="firstName"]').setValue('lea')
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.findAll('li')).toHaveLength(1)
+
+    await wrapper.find('form').trigger('reset')
+
+    expect(wrapper.findAll('li')).toHaveLength(3)
+  })
+
+  it('should empty the fields after a reset', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="firstName"]').setValue('lea')
+    await wrapper.find('input[name="lastName"]').setValue('dupont')
+    await wrapper.find('form').trigger('reset')
+
+    expect((wrapper.find('input[name="firstName"]').element as HTMLInputElement).value).toBe('')
+    expect((wrapper.find('input[name="lastName"]').element as HTMLInputElement).value).toBe('')
+  })
+
+  it('should remove the no match message after a reset', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="lastName"]').setValue('blancj')
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.text()).toContain('Aucune personne trouvée')
+
+    await wrapper.find('form').trigger('reset')
+
+    expect(wrapper.text()).not.toContain('Aucune personne trouvée')
+    expect(wrapper.findAll('li')).toHaveLength(3)
+  })
 })

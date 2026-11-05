@@ -8,6 +8,7 @@
       v-model:first-name="criteria.firstName"
       v-model:last-name="criteria.lastName"
       @search="search"
+      @reset="reset"
     />
 
     <PersonList
@@ -33,5 +34,11 @@ const results = computed(() => searchPersons(appliedCriteria.value))
 
 function search() {
   appliedCriteria.value = { ...criteria }
+}
+
+function reset() {
+  criteria.firstName = ''
+  criteria.lastName = ''
+  search()
 }
 </script>
