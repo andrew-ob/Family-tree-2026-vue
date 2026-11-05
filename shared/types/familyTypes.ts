@@ -42,3 +42,8 @@ export type PersonDetails = {
   siblings: Sibling[]
   partners: Person[]
 }
+
+export type PersonSearchCriteria = {
+  firstName: string
+  lastName: string
+}
