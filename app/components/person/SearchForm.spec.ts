@@ -44,4 +44,18 @@ describe('PersonSearchForm', () => {
 
     expect(submit.defaultPrevented).toBe(true)
   })
+
+  it('should emit search when the form is submitted', async () => {
+    const wrapper = await mountSuspended(PersonSearchForm)
+
+    await wrapper.find('form').trigger('submit')
+
+    expect(wrapper.emitted('search')).toHaveLength(1)
+  })
+
+  it('should have a submit button labelled Rechercher', async () => {
+    const wrapper = await mountSuspended(PersonSearchForm)
+
+    expect(wrapper.find('button[type="submit"]').text()).toBe('Rechercher')
+  })
 })

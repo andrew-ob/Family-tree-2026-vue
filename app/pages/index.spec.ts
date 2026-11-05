@@ -47,4 +47,31 @@ describe('Index page', () => {
     expect(wrapper.find('h1').text()).toBe('Family tree')
     expect(wrapper.findAll('li')).toHaveLength(0)
   })
+
+  it('should not filter the list while typing', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="firstName"]').setValue('lea')
+
+    expect(wrapper.findAll('li')).toHaveLength(3)
+  })
+
+  it('should filter the list when the form is submitted', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="firstName"]').setValue('lea')
+    await wrapper.find('form').trigger('submit')
+
+    expect(wrapper.findAll('li').map(li => li.find('p').text())).toEqual(['Léa Dupont'])
+  })
+
+  it('should show a message when no person matches after a search', async () => {
+    const wrapper = await mountPage()
+
+    await wrapper.find('input[name="lastName"]').setValue('blancj')
+    await wrapper.find('form').trigger('submit')
+
+    expect(wrapper.findAll('li')).toHaveLength(0)
+    expect(wrapper.text()).toContain('Aucune personne trouvée')
+  })
 })
