@@ -15,7 +15,7 @@
     <div>
       <p>{{ person.firstName }} {{ person.lastName }}</p>
 
-      <p>{{ person.birthDate || 'XXXX' }} - {{ person.deathDate || 'XXXX' }}</p>
+      <p>{{ person.birth?.date || 'XXXX' }} - {{ person.death?.date || 'XXXX' }}</p>
     </div>
   </div>
 </template>

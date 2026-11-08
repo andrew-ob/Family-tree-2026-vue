@@ -6,8 +6,8 @@ import type { Person } from '~~/shared/types/familyTypes'
 import PersonList from './List.vue'
 
 const persons: Person[] = [
-  { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female' },
-  { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male' },
+  { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: true },
+  { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', isAlive: true },
 ]
 
 const mountList = (list: Person[] = persons) =>

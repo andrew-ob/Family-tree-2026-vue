@@ -8,20 +8,20 @@ import PersonPage from './[id].vue'
 
 const fixture: FamilyData = {
   persons: [
-    { id: 'pereId', firstName: 'Paul', lastName: 'Dupont', sex: 'male', birthDate: '1940', deathDate: '2010' },
-    { id: 'mereId', firstName: 'Marie', lastName: 'Martin', sex: 'female', birthDate: '1945' },
-    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', birthDate: '1970', deathDate: '2020', fatherId: 'pereId', motherId: 'mereId' },
-    { id: 'tomId', firstName: 'Tom', lastName: 'Dupont', sex: 'male', deathDate: '2001', fatherId: 'pereId', motherId: 'mereId' },
-    { id: 'zoeId', firstName: 'Zoé', lastName: 'Dupont', sex: 'female', birthDate: '1972', deathDate: '1990', fatherId: 'pereId', motherId: 'mereId' },
-    { id: 'evaId', firstName: 'Eva', lastName: 'Durand', sex: 'female', birthDate: '2000', deathDate: '2015', motherId: 'leaId' },
-    { id: 'noaId', firstName: 'Noa', lastName: 'Durand', sex: 'unknown', motherId: 'leaId' },
-    { id: 'ianId', firstName: 'Ian', lastName: 'Durand', sex: 'male', birthDate: '1968', deathDate: '2018' },
-    { id: 'samId', firstName: 'Sam', lastName: 'Petit', sex: 'unknown' },
-    { id: 'claireId', firstName: 'Claire', lastName: 'Roux', sex: 'female', birthDate: '1950', deathDate: '2000' },
-    { id: 'ellaId', firstName: 'Ella', lastName: 'Roux', sex: 'female', motherId: 'claireId' },
-    { id: 'sylvainId', firstName: 'Sylvain', lastName: 'Blanc', sex: 'male' },
-    { id: 'maxId', firstName: 'Max', lastName: 'Blanc', sex: 'male', fatherId: 'sylvainId' },
-    { id: 'soloId', firstName: 'Solo', lastName: 'Seul', sex: 'unknown' },
+    { id: 'pereId', firstName: 'Paul', lastName: 'Dupont', sex: 'male', isAlive: false, birth: { date: '1940' }, death: { date: '2010' } },
+    { id: 'mereId', firstName: 'Marie', lastName: 'Martin', sex: 'female', isAlive: true, birth: { date: '1945' } },
+    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: false, birth: { date: '1970', place: 'Lyon' }, death: { date: '2020', place: 'Paris' }, fatherId: 'pereId', motherId: 'mereId' },
+    { id: 'tomId', firstName: 'Tom', lastName: 'Dupont', sex: 'male', isAlive: false, death: { date: '2001' }, fatherId: 'pereId', motherId: 'mereId' },
+    { id: 'zoeId', firstName: 'Zoé', lastName: 'Dupont', sex: 'female', isAlive: false, birth: { date: '1972' }, death: { date: '1990' }, fatherId: 'pereId', motherId: 'mereId' },
+    { id: 'evaId', firstName: 'Eva', lastName: 'Durand', sex: 'female', isAlive: false, birth: { date: '2000' }, death: { date: '2015' }, motherId: 'leaId' },
+    { id: 'noaId', firstName: 'Noa', lastName: 'Durand', sex: 'unknown', isAlive: true, motherId: 'leaId' },
+    { id: 'ianId', firstName: 'Ian', lastName: 'Durand', sex: 'male', isAlive: false, birth: { date: '1968' }, death: { date: '2018' } },
+    { id: 'samId', firstName: 'Sam', lastName: 'Petit', sex: 'unknown', isAlive: true },
+    { id: 'claireId', firstName: 'Claire', lastName: 'Roux', sex: 'female', isAlive: false, birth: { date: '1950' }, death: { date: '2000' } },
+    { id: 'ellaId', firstName: 'Ella', lastName: 'Roux', sex: 'female', isAlive: true, motherId: 'claireId' },
+    { id: 'sylvainId', firstName: 'Sylvain', lastName: 'Blanc', sex: 'male', isAlive: true },
+    { id: 'maxId', firstName: 'Max', lastName: 'Blanc', sex: 'male', isAlive: true, fatherId: 'sylvainId' },
+    { id: 'soloId', firstName: 'Solo', lastName: 'Seul', sex: 'unknown', isAlive: true },
   ],
   unions: [
     { id: 'u1', partner1Id: 'leaId', partner2Id: 'ianId' },
@@ -47,6 +47,20 @@ describe('Person page', () => {
       const wrapper = await mountPage('leaId')
 
       expect(wrapper.find('h1').text()).toBe('Léa Dupont')
+    })
+
+    it('should show the birth and death places of the person', async () => {
+      const wrapper = await mountPage('leaId')
+
+      expect(wrapper.text()).toContain('Née en 1970 à Lyon')
+      expect(wrapper.text()).toContain('Décédée en 2020 à Paris')
+    })
+
+    it('should not show any death line for a person who is alive', async () => {
+      const wrapper = await mountPage('mereId')
+
+      expect(wrapper.text()).toContain('Née en 1945')
+      expect(wrapper.text()).not.toContain('Décédée')
     })
 
     it('should show a not found message when the person does not exist', async () => {

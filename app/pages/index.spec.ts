@@ -8,9 +8,9 @@ import IndexPage from './index.vue'
 
 const fixture: FamilyData = {
   persons: [
-    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', birthDate: '1970' },
-    { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', deathDate: '2001' },
-    { id: 'noaId', firstName: 'Noa', lastName: 'Durand', sex: 'unknown' },
+    { id: 'leaId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: true, birth: { date: '1970' } },
+    { id: 'tomId', firstName: 'Tom', lastName: 'Blanc', sex: 'male', isAlive: false, death: { date: '2001' } },
+    { id: 'noaId', firstName: 'Noa', lastName: 'Durand', sex: 'unknown', isAlive: true },
   ],
   unions: [],
 }

@@ -3,11 +3,11 @@
     {{ person.firstName }} {{ person.lastName }}
   </PersonLinkPage>
 
-  <span>{{ person.birthDate }}</span>
+  <span>{{ person.birth?.date }}</span>
   <span
-    v-if="person.birthDate && person.deathDate"
+    v-if="person.birth?.date && person.death?.date"
   >-</span>
-  <span>{{ person.deathDate }}</span>
+  <span>{{ person.death?.date }}</span>
 </template>
 
 <script setup lang="ts">

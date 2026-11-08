@@ -6,11 +6,11 @@ import { useFamily } from './useFamily'
 
 const fixture: FamilyData = {
   persons: [
-    { id: 'pereId', firstName: 'Paul', lastName: 'Dupont', sex: 'male' },
-    { id: 'mereId', firstName: 'Marie', lastName: 'Martin', sex: 'female' },
-    { id: 'filleId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', fatherId: 'pereId', motherId: 'mereId' },
-    { id: 'filsId', firstName: 'Tom', lastName: 'Dupont', sex: 'male', fatherId: 'pereId', motherId: 'mereId' },
-    { id: 'petiteFilleId', firstName: 'Zoé', lastName: 'Dupont', sex: 'female', fatherId: 'filsId' },
+    { id: 'pereId', firstName: 'Paul', lastName: 'Dupont', sex: 'male', isAlive: true },
+    { id: 'mereId', firstName: 'Marie', lastName: 'Martin', sex: 'female', isAlive: true },
+    { id: 'filleId', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: true, fatherId: 'pereId', motherId: 'mereId' },
+    { id: 'filsId', firstName: 'Tom', lastName: 'Dupont', sex: 'male', isAlive: true, fatherId: 'pereId', motherId: 'mereId' },
+    { id: 'petiteFilleId', firstName: 'Zoé', lastName: 'Dupont', sex: 'female', isAlive: true, fatherId: 'filsId' },
   ],
   unions: [{ id: 'u1', partner1Id: 'pereId', partner2Id: 'mereId' }],
 }

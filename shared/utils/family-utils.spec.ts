@@ -20,6 +20,7 @@ const person = (overrides: Partial<Person> & { id: string }): Person => ({
   firstName: 'Prénom',
   lastName: 'Nom',
   sex: 'unknown',
+  isAlive: true,
   ...overrides,
 })
 

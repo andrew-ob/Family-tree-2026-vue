@@ -1,10 +1,23 @@
+export type BirthInfo = {
+  date?: string
+  place?: string
+}
+
+export type DeathInfo = {
+  date?: string
+  place?: string
+  cause?: string
+}
+
 export type Person = {
   id: string
   firstName: string
   lastName: string
   sex: 'male' | 'female' | 'unknown'
-  birthDate?: string
-  deathDate?: string
+  isAlive: boolean
+  birth?: BirthInfo
+  /** Only meaningful when `isAlive` is false. `{}` means "deceased, no details known". */
+  death?: DeathInfo
   fatherId?: string
   motherId?: string
 }

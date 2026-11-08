@@ -5,7 +5,7 @@ import type { Person } from '~~/shared/types/familyTypes'
 
 import PersonCardInfo from './CardInfo.vue'
 
-const base: Person = { id: 'x', firstName: 'Léa', lastName: 'Dupont', sex: 'female' }
+const base: Person = { id: 'x', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: true }
 
 const mountCard = (overrides: Partial<Person> = {}) =>
   mountSuspended(PersonCardInfo, { props: { person: { ...base, ...overrides } } })
@@ -30,9 +30,9 @@ describe('PersonCardInfo', () => {
   })
 
   it.each<[string, Partial<Person>, string]>([
-    ['both a birth and a death date', { birthDate: '1970', deathDate: '2020' }, '1970 - 2020'],
-    ['only a birth date', { birthDate: '1945' }, '1945 - XXXX'],
-    ['only a death date', { deathDate: '2001' }, 'XXXX - 2001'],
+    ['both a birth and a death date', { isAlive: false, birth: { date: '1970' }, death: { date: '2020' } }, '1970 - 2020'],
+    ['only a birth date', { birth: { date: '1945' } }, '1945 - XXXX'],
+    ['only a death date', { isAlive: false, death: { date: '2001' } }, 'XXXX - 2001'],
     ['no date', {}, 'XXXX - XXXX'],
   ])('should show the life dates when the person has %s', async (_case, dates, expected) => {
     const wrapper = await mountCard(dates)
