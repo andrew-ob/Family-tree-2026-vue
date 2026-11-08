@@ -1,9 +1,9 @@
 <template>
   <div
-    class="p-4 my-2 min-w-[116px] min-h-[53px] flex bg-red-500 hover:bg-red-900 rounded-xl text-white"
+    class="p-4 my-2 min-w-29 min-h-13.25 flex bg-red-500 hover:bg-red-900 rounded-xl text-white"
   >
     <div
-      class="rounded-2xl p-0.5 mr-[5px]"
+      class="rounded-2xl p-0.5 mr-1.25"
       :class="{
         'bg-blue-300': person.sex === 'male',
         'bg-pink-300': person.sex === 'female',
