@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col items-center">
+  <div class="bg-bg">
     <h1 class="m-6 text-3xl">
       Family tree
     </h1>
@@ -19,7 +19,7 @@
     <p v-else>
       Aucune personne trouvée
     </p>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">

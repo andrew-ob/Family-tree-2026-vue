@@ -1,41 +1,49 @@
 <template>
   <form
-    class="flex gap-4 m-6"
+    class="mt-2"
     role="search"
     @submit.prevent="emit('search')"
     @reset.prevent="emit('reset')"
   >
-    <label class="flex flex-col">
-      Prénom
-      <input
-        v-model="firstName"
-        name="firstName"
-        type="search"
-        class="rounded p-2"
+    <div class="flex">
+      <div>
+        <label class="flex flex-col">
+          Prénom
+          <input
+            v-model="firstName"
+            name="firstName"
+            type="search"
+            class="rounded p-2"
+          >
+        </label>
+      </div>
+
+      <div>
+        <label class="flex flex-col">
+          Nom
+          <input
+            v-model="lastName"
+            name="lastName"
+            type="search"
+            class="rounded p-2"
+          >
+        </label>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button
+        type="submit"
       >
-    </label>
+        Rechercher
+      </button>
 
-    <label class="flex flex-col">
-      Nom
-      <input
-        v-model="lastName"
-        name="lastName"
-        type="search"
-        class="rounded p-2"
+      <button
+        type="reset"
       >
-    </label>
-
-    <button
-      type="submit"
-    >
-      Rechercher
-    </button>
-
-    <button
-      type="reset"
-    >
-      Effacer
-    </button>
+        Effacer
+      </button>
+    </div>
   </form>
 </template>
 
