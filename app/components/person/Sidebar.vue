@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-bg">
+  <div class="relative bg-bg h-full min-h-0 overflow-y-auto overscroll-contain">
     <h1 class="m-6 text-3xl">
       Family tree
     </h1>

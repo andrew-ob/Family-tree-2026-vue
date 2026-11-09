@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-bg min-h-screen p-16">
+  <div class="h-dvh overflow-hidden">
     <NuxtRouteAnnouncer />
     <NuxtPage />
   </div>
