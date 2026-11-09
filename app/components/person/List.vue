@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul v-if="persons.length">
     <li
       v-for="person in persons"
       :key="person.id"
@@ -11,6 +11,10 @@
       </PersonLinkPage>
     </li>
   </ul>
+
+  <p v-else>
+    Aucune personne trouvée
+  </p>
 </template>
 
 <script setup lang="ts">

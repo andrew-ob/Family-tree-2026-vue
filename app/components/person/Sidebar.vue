@@ -11,14 +11,7 @@
       @reset="reset"
     />
 
-    <PersonList
-      v-if="results.length"
-      :persons="results"
-    />
-
-    <p v-else>
-      Aucune personne trouvée
-    </p>
+    <PersonList :persons="results" />
   </div>
 </template>
 

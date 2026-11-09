@@ -35,7 +35,19 @@ describe('PersonList', () => {
   it('should not show any item when there is no person', async () => {
     const wrapper = await mountList([])
 
-    expect(wrapper.find('ul').exists()).toBe(true)
+    expect(wrapper.find('ul').exists()).toBe(false)
     expect(wrapper.findAll('li')).toHaveLength(0)
+  })
+
+  it('should show a message when there is no person', async () => {
+    const wrapper = await mountList([])
+
+    expect(wrapper.text()).toContain('Aucune personne trouvée')
+  })
+
+  it('should not show the no person message when there are persons', async () => {
+    const wrapper = await mountList()
+
+    expect(wrapper.text()).not.toContain('Aucune personne trouvée')
   })
 })
