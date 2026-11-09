@@ -1,28 +1,28 @@
 <template>
   <main>
-    <div v-if="personDetails">
+    <div v-if="memberDetails">
       <PersonHeader
-        :person="personDetails.person"
+        :person="memberDetails.person"
       />
 
       <PersonSummaryList
         title="Parents"
-        :persons="personDetails.parents"
+        :persons="memberDetails.parents"
       />
 
       <PersonSummaryList
         title="Enfants"
-        :persons="personDetails.children"
+        :persons="memberDetails.children"
       />
 
       <PersonSummaryList
         title="Frères et soeurs"
-        :persons="personDetails.siblings.map(s => s.person)"
+        :persons="memberDetails.siblings.map(s => s.person)"
       />
 
       <PersonSummaryList
         title="Partenaires"
-        :persons="personDetails.partners"
+        :persons="memberDetails.partners"
       />
     </div>
 
@@ -33,8 +33,13 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+interface MemberDetailsProps {
+  memberId: string
+}
+
+const { memberId } = defineProps<MemberDetailsProps>()
+
 const { getPersonDetails } = useFamily()
 
-const personDetails = computed(() => getPersonDetails(route.params.id as string))
+const memberDetails = computed(() => getPersonDetails(memberId))
 </script>

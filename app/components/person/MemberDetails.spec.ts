@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import type { FamilyData } from '~~/shared/types/familyTypes'
 
-import { useFamily } from '../../composables/useFamily'
-import PersonPage from './[id].vue'
+import { useFamily } from '../../composables/useFamily.js'
+import MemberDetails from './MemberDetails.vue'
 
 const fixture: FamilyData = {
   persons: [
@@ -29,42 +29,61 @@ const fixture: FamilyData = {
   ],
 }
 
-const mountPage = (id: string) => mountSuspended(PersonPage, { route: `/person/${id}` })
+const mountDetails = (memberId: string) => mountSuspended(MemberDetails, { props: { memberId } })
 
-type PageWrapper = Awaited<ReturnType<typeof mountPage>>
+type DetailsWrapper = Awaited<ReturnType<typeof mountDetails>>
 
 /** Text of the list item containing the given name, without any whitespace (undefined when there is no such item). */
-const itemText = (wrapper: PageWrapper, name: string) =>
+const itemText = (wrapper: DetailsWrapper, name: string) =>
   wrapper.findAll('li').find(li => li.text().includes(name))?.text().replace(/\s+/g, '')
 
-describe('Person page', () => {
+describe('MemberDetails', () => {
   beforeEach(() => {
     useFamily().family.value = structuredClone(fixture)
   })
 
   describe('person', () => {
-    it('should show the full name as the page title', async () => {
-      const wrapper = await mountPage('leaId')
+    it('should show the full name as the title', async () => {
+      const wrapper = await mountDetails('leaId')
 
       expect(wrapper.find('h1').text()).toBe('Léa Dupont')
     })
 
     it('should show the birth and death places of the person', async () => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
 
       expect(wrapper.text()).toContain('Née en 1970 à Lyon')
       expect(wrapper.text()).toContain('Décédée en 2020 à Paris')
     })
 
     it('should not show any death line for a person who is alive', async () => {
-      const wrapper = await mountPage('mereId')
+      const wrapper = await mountDetails('mereId')
 
       expect(wrapper.text()).toContain('Née en 1945')
       expect(wrapper.text()).not.toContain('Décédée')
     })
 
     it('should show a not found message when the person does not exist', async () => {
-      const wrapper = await mountPage('unknownId')
+      const wrapper = await mountDetails('unknownId')
+
+      expect(wrapper.text()).toContain('Personne introuvable')
+      expect(wrapper.find('h1').exists()).toBe(false)
+    })
+  })
+
+  describe('member change', () => {
+    it('should update the displayed member when the member id changes', async () => {
+      const wrapper = await mountDetails('leaId')
+
+      await wrapper.setProps({ memberId: 'tomId' })
+
+      expect(wrapper.find('h1').text()).toBe('Tom Dupont')
+    })
+
+    it('should show a not found message when the member id changes to an unknown id', async () => {
+      const wrapper = await mountDetails('leaId')
+
+      await wrapper.setProps({ memberId: 'unknownId' })
 
       expect(wrapper.text()).toContain('Personne introuvable')
       expect(wrapper.find('h1').exists()).toBe(false)
@@ -78,7 +97,7 @@ describe('Person page', () => {
       ['sibling', 'Zoé Dupont', '1972-1990'],
       ['partner', 'Ian Durand', '1968-2018'],
     ])('should show a dash between the birth and death dates of a %s', async (_relative, name, lifeDates) => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
 
       expect(itemText(wrapper, name)).toContain(lifeDates)
     })
@@ -89,7 +108,7 @@ describe('Person page', () => {
       ['child without any date', 'Noa Durand', ''],
       ['partner without any date', 'Sam Petit', ''],
     ])('should not show a dash for a %s', async (_relative, name, lifeDates) => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
       const text = itemText(wrapper, name)
 
       expect(text).toBeDefined()
@@ -100,21 +119,21 @@ describe('Person page', () => {
 
   describe('parents', () => {
     it('should show both parents', async () => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
 
       expect(itemText(wrapper, 'Paul Dupont')).toBeDefined()
       expect(itemText(wrapper, 'Marie Martin')).toBeDefined()
     })
 
     it('should only show the mother when the father is unknown', async () => {
-      const wrapper = await mountPage('ellaId')
+      const wrapper = await mountDetails('ellaId')
 
       expect(wrapper.findAll('li')).toHaveLength(1)
       expect(itemText(wrapper, 'Claire Roux')).toContain('1950-2000')
     })
 
     it('should only show the father when the mother is unknown', async () => {
-      const wrapper = await mountPage('maxId')
+      const wrapper = await mountDetails('maxId')
 
       expect(wrapper.findAll('li')).toHaveLength(1)
       expect(itemText(wrapper, 'Sylvain Blanc')).not.toContain('-')
@@ -123,19 +142,19 @@ describe('Person page', () => {
 
   describe('sections', () => {
     it('should show the parents, children, siblings and partners sections', async () => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
 
       expect(wrapper.findAll('h2').map(h2 => h2.text())).toEqual(['Parents', 'Enfants', 'Frères et soeurs', 'Partenaires'])
     })
 
     it('should hide the sections without data', async () => {
-      const wrapper = await mountPage('samId')
+      const wrapper = await mountDetails('samId')
 
       expect(wrapper.findAll('h2').map(h2 => h2.text())).toEqual(['Partenaires'])
     })
 
     it('should hide every section when the person has no relative', async () => {
-      const wrapper = await mountPage('soloId')
+      const wrapper = await mountDetails('soloId')
 
       expect(wrapper.findAll('h2')).toHaveLength(0)
     })
@@ -149,7 +168,7 @@ describe('Person page', () => {
       ['sibling', 'tomId'],
       ['partner', 'ianId'],
     ])('should link the %s to their own page', async (_relative, id) => {
-      const wrapper = await mountPage('leaId')
+      const wrapper = await mountDetails('leaId')
 
       expect(wrapper.find(`a[href="/person/${id}"]`).exists()).toBe(true)
     })
@@ -159,7 +178,7 @@ describe('Person page', () => {
     it.each(['leaId', 'tomId', 'mereId', 'samId', 'soloId', 'ellaId', 'maxId'])(
       'should not render undefined, null or NaN for %s',
       async (id) => {
-        const wrapper = await mountPage(id)
+        const wrapper = await mountDetails(id)
 
         expect(wrapper.text()).not.toMatch(/undefined|null|NaN/)
       },
