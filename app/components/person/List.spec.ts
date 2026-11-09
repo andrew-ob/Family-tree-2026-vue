@@ -29,7 +29,7 @@ describe('PersonList', () => {
   it('should link each person to their own page', async () => {
     const wrapper = await mountList()
 
-    expect(wrapper.findAll('a').map(a => a.attributes('href'))).toEqual(['/person/leaId', '/person/tomId'])
+    expect(wrapper.findAll('a').map(a => a.attributes('href'))).toEqual(['/?member=leaId', '/?member=tomId'])
   })
 
   it('should not show any item when there is no person', async () => {

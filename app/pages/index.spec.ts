@@ -37,7 +37,7 @@ describe('Index page', () => {
   it('should link each person to their own page', async () => {
     const wrapper = await mountPage()
 
-    expect(wrapper.findAll('a').map(a => a.attributes('href'))).toEqual(['/person/leaId', '/person/tomId', '/person/noaId'])
+    expect(wrapper.findAll('a').map(a => a.attributes('href'))).toEqual(['/?member=leaId', '/?member=tomId', '/?member=noaId'])
   })
 
   it('should keep the title and show no person when the family is empty', async () => {

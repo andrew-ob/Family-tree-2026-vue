@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/person/${id}`">
+  <NuxtLink :to="`/?member=${id}`">
     <slot />
   </NuxtLink>
 </template>

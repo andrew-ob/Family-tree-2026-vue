@@ -170,7 +170,7 @@ describe('MemberDetails', () => {
     ])('should link the %s to their own page', async (_relative, id) => {
       const wrapper = await mountDetails('leaId')
 
-      expect(wrapper.find(`a[href="/person/${id}"]`).exists()).toBe(true)
+      expect(wrapper.find(`a[href="/?member=${id}"]`).exists()).toBe(true)
     })
   })
 
