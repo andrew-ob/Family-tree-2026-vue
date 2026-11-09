@@ -1,9 +1,9 @@
 <template>
   <div
-    class="p-4 my-2 min-w-29 min-h-13.25 flex bg-red-500 hover:bg-red-900 rounded-xl text-white"
+    class="p-4 min-w-29 min-h-13.25 flex text-base hover:bg-surface rounded-full"
   >
     <div
-      class="rounded-2xl p-0.5 mr-1.25"
+      class="rounded-3xl p-0.5 mr-1.25"
       :class="{
         'bg-blue-300': person.sex === 'male',
         'bg-pink-300': person.sex === 'female',
@@ -13,9 +13,20 @@
     </div>
 
     <div>
-      <p>{{ person.firstName }} {{ person.lastName }}</p>
+      <div>
+        <p class="text-lg">
+          {{ person.firstName }} {{ person.lastName }}
+        </p>
+      </div>
 
-      <p>{{ person.birth?.date || 'XXXX' }} - {{ person.death?.date || 'XXXX' }}</p>
+      <div class="flex gap-1 text-neutral-700">
+        <p>
+          {{ person.birth?.date || 'XXXX' }} - {{ person.death?.date || 'XXXX' }}
+        </p>
+        <p>
+          {{ person.birth?.place || '?' }} - {{ person.death?.place || '?' }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
