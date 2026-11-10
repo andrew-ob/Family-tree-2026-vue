@@ -1,13 +1,13 @@
 <template>
   <div
-    class="p-4 min-w-29 min-h-13.25 flex text-base hover:bg-surface rounded-full"
+    class="p-4 min-w-29 min-h-13.25 gap-3 flex text-base hover:bg-surface rounded-full items-center"
   >
     <div
-      class="rounded-3xl p-0.5 mr-1.25"
+      class="rounded-full shrink-0 h-10 w-10 flex justify-center items-center font-bold text-xs"
       :class="{
-        'bg-blue-300': person.sex === 'male',
-        'bg-pink-300': person.sex === 'female',
-        'bg-gray-300': person.sex === 'unknown' }"
+        'bg-person-male-bg ': person.sex === 'male',
+        'bg-person-female-bg': person.sex === 'female',
+        'bg-person-unknown-bg': person.sex === 'unknown' }"
     >
       <span class="sr-only">{{ sexLabel }}</span>
     </div>
@@ -24,7 +24,9 @@
           {{ person.birth?.date || 'XXXX' }} - {{ person.death?.date || 'XXXX' }}
         </p>
         <p>
-          {{ person.birth?.place || '?' }} - {{ person.death?.place || '?' }}
+          {{ person.birth?.place }}
+          <span v-if="person.birth?.place && person.death?.place">-</span>
+          {{ person.death?.place }}
         </p>
       </div>
     </div>

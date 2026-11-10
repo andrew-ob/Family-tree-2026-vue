@@ -18,15 +18,16 @@ describe('PersonCardInfo', () => {
   })
 
   it.each<[Person['sex'], string, string]>([
-    ['male', 'bg-blue-300', 'Homme'],
-    ['female', 'bg-pink-300', 'Femme'],
-    ['unknown', 'bg-gray-300', 'Sexe inconnu'],
+    ['male', 'bg-person-male-bg', 'Homme'],
+    ['female', 'bg-person-female-bg', 'Femme'],
+    ['unknown', 'bg-person-unknown-bg', 'Sexe inconnu'],
   ])('should show the matching color and accessible label when the sex is %s', async (sex, color, label) => {
     const wrapper = await mountCard({ sex })
-    const marker = wrapper.find('.rounded-2xl')
+    const srLabel = wrapper.find('.sr-only')
+    const marker = srLabel.element.parentElement!
 
-    expect(marker.classes().filter(c => c.startsWith('bg-'))).toEqual([color])
-    expect(wrapper.find('.sr-only').text()).toBe(label)
+    expect(srLabel.text()).toBe(label)
+    expect([...marker.classList].filter(c => c.startsWith('bg-'))).toEqual([color])
   })
 
   it.each<[string, Partial<Person>, string]>([
@@ -38,5 +39,16 @@ describe('PersonCardInfo', () => {
     const wrapper = await mountCard(dates)
 
     expect(wrapper.findAll('p')[1]!.text()).toBe(expected)
+  })
+
+  it.each<[string, Partial<Person>, string]>([
+    ['both a birth and a death place', { isAlive: false, birth: { place: 'Paris' }, death: { place: 'Lyon' } }, 'Paris - Lyon'],
+    ['only a birth place', { birth: { place: 'Paris' } }, 'Paris'],
+    ['only a death place', { isAlive: false, death: { place: 'Lyon' } }, 'Lyon'],
+    ['no place', {}, ''],
+  ])('should show the places when the person has %s', async (_case, places, expected) => {
+    const wrapper = await mountCard(places)
+
+    expect(wrapper.findAll('p')[2]!.text().replace(/\s+/g, ' ')).toBe(expected)
   })
 })
