@@ -3,6 +3,7 @@
     <PersonHeadSidebar
       v-model:first-name="criteria.firstName"
       v-model:last-name="criteria.lastName"
+      :member-count="memberCount"
       class="shrink-0"
       @search="search"
       @reset="reset"
@@ -16,4 +17,7 @@
 
 <script setup lang="ts">
 const { criteria, results, search, reset } = usePersonSearch()
+const { family } = useFamily()
+
+const memberCount = computed(() => family.value.persons.length)
 </script>
