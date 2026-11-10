@@ -18,8 +18,9 @@ const fixture: FamilyData = {
 const mountPage = () => mountSuspended(IndexPage)
 
 describe('Index page', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     useFamily().family.value = structuredClone(fixture)
+    await useRouter().push({ path: '/', query: {} })
   })
 
   it('should show the page title', async () => {
@@ -109,5 +110,24 @@ describe('Index page', () => {
 
     expect(wrapper.text()).not.toContain('Aucune personne trouvée')
     expect(wrapper.findAll('li')).toHaveLength(3)
+  })
+
+  describe('when a member is selected', () => {
+    it('should show the details of the selected member instead of the sidebar', async () => {
+      await useRouter().push({ query: { member: 'leaId' } })
+      const wrapper = await mountPage()
+
+      expect(wrapper.find('h1').text()).toBe('Léa Dupont')
+      expect(wrapper.find('form').exists()).toBe(false)
+      expect(wrapper.text()).not.toContain('Family tree')
+    })
+
+    it('should show a not found message when the selected member does not exist', async () => {
+      await useRouter().push({ query: { member: 'unknownId' } })
+      const wrapper = await mountPage()
+
+      expect(wrapper.text()).toContain('Personne introuvable')
+      expect(wrapper.find('form').exists()).toBe(false)
+    })
   })
 })
