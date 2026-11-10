@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Person } from '~~/shared/types/familyTypes'
 
+import UiAvatar from '../ui/Avatar.vue'
 import PersonCardInfo from './CardInfo.vue'
 
 const base: Person = { id: 'x', firstName: 'Léa', lastName: 'Dupont', sex: 'female', isAlive: true }
@@ -17,17 +18,27 @@ describe('PersonCardInfo', () => {
     expect(wrapper.findAll('p')[0]!.text()).toBe('Léa Dupont')
   })
 
-  it.each<[Person['sex'], string, string]>([
-    ['male', 'bg-person-male-bg', 'Homme'],
-    ['female', 'bg-person-female-bg', 'Femme'],
-    ['unknown', 'bg-person-unknown-bg', 'Sexe inconnu'],
-  ])('should show the matching color and accessible label when the sex is %s', async (sex, color, label) => {
-    const wrapper = await mountCard({ sex })
-    const srLabel = wrapper.find('.sr-only')
-    const marker = srLabel.element.parentElement!
+  it.each<Person['sex']>(['male', 'female', 'unknown'])(
+    'should give the avatar the person sex when the sex is %s',
+    async (sex) => {
+      const wrapper = await mountCard({ sex })
+      const avatar = wrapper.findComponent(UiAvatar)
 
-    expect(srLabel.text()).toBe(label)
-    expect([...marker.classList].filter(c => c.startsWith('bg-'))).toEqual([color])
+      expect(avatar.exists()).toBe(true)
+      expect(avatar.props('sex')).toBe(sex)
+    },
+  )
+
+  it('should give the avatar the person so it can compute the initials', async () => {
+    const wrapper = await mountCard()
+
+    expect(wrapper.findComponent(UiAvatar).text()).toBe('LD')
+  })
+
+  it('should show the avatar with the list size', async () => {
+    const wrapper = await mountCard()
+
+    expect(wrapper.findComponent(UiAvatar).props('size')).toBe('list')
   })
 
   it.each<[string, Partial<Person>, string]>([
