@@ -602,6 +602,11 @@
     "@eslint/core" "^1.2.1"
     levn "^0.4.1"
 
+"@fontsource-variable/figtree@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/figtree/-/figtree-5.3.0.tgz#df8e3e467d3cceb1eb982ae2ed04a4accb284f65"
+  integrity sha512-VRVodD7OiG7apQwE8/2fMjaqpY/a0qRJqL5HtYj8CKIVps+9amaFcdfKmDIf7iqYQx6iPLlArVXAfKeIZmVcNQ==
+
 "@fontsource/caprasimo@^5.3.0":
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/@fontsource/caprasimo/-/caprasimo-5.3.0.tgz#a7f4ce2fd0be32a3bc05483c7a59703042d37686"
@@ -5664,6 +5669,7 @@ streamx@^2.12.5, streamx@^2.25.0, streamx@^2.28.1:
     text-decoder "^1.1.0"
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -5713,6 +5719,7 @@ string_decoder@~1.1.1:
     safe-buffer "~5.1.0"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  name strip-ansi-cjs
   version "6.0.1"
   resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
