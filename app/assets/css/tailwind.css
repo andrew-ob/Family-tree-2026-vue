@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource/caprasimo";   
 
 @theme {
   /* Couleurs → bg-*, text-*, border-*… */
