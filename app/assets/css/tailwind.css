@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@fontsource/caprasimo";   
+@import "@fontsource/caprasimo";
 
 @theme {
   /* Couleurs → bg-*, text-*, border-*… */
@@ -127,5 +127,14 @@
     line-height: 1.55;
     font-weight: 400;
     letter-spacing: 0;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-[15px] leading-[1.55] text-text;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading font-normal;
   }
 }
